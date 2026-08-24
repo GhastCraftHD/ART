@@ -7265,10 +7265,12 @@ float Color::eval_PQ_curve(float x, bool oetf)
         return 0.f;
     }
 
+    // 203 nits is Operational Target as Standardized by ITU-R BT.2408
+    constexpr float sdr_peak_nits = 203.f;
+    constexpr float scaling = 10000.f / sdr_peak_nits;
     float res = 0.f;
     if (oetf) {
-        // assume 1.0 is 100 nits, normalise so that 1.0 is 10000 nits
-        float p = std::pow(std::max(x, 0.f) / 100.f, M1);
+        float p = std::pow(std::max(x, 0.f) / scaling, M1);
         float num = C1 + C2 * p;
         float den = 1.f + C3 * p;
         res = std::pow(num / den, M2);
@@ -7276,7 +7278,7 @@ float Color::eval_PQ_curve(float x, bool oetf)
         float p = std::pow(x, 1.f / M2);
         float num = std::max(p - C1, 0.f);
         float den = C2 - C3 * p;
-        res = std::pow(num / den, 1.f / M1) * 100.f;
+        res = std::pow(num / den, 1.f / M1) * scaling;
     }
     return res;
 }
@@ -7293,15 +7295,16 @@ float Color::eval_HLG_curve(float x, bool oetf)
         return 0.f;
     }
 
+    constexpr float sdr_peak_nits = 203.f;
+    constexpr float scaling = 1000.f / sdr_peak_nits;
     float res = 0.f;
     if (oetf) {
-        // assume 1.0 is 100 nits, normalise so that 1.0 is 1000 nits
-        float e = LIM01(x / 10.f);
+        float e = LIM01(x / scaling);
         res = (e <= 1.f / 12.f) ? std::sqrt(3.f * e)
                                 : A * std::log(12.f * e - B) + C;
     } else {
         res = (x <= 0.5f) ? SQR(x) / 3.f : (std::exp((x - C) / A) + B) / 12.f;
-        res *= 10.f;
+        res *= scaling;
     }
 
     return res;
