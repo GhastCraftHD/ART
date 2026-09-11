@@ -107,14 +107,14 @@ void heal_laplace_loop(Imagefloat *img, const array2D<int32_t> &mask)
     const vfloat w2v = F2V(w2);
     const vint iZEROv = vcast_vi_i(0);
 
-    const auto vnext = [&](float **chan, int x, int y) -> void {
+    const auto vnext = [&](float **chan, int x, int y, vmask nz) -> void {
         vfloat cur = LVFU(chan[y][x]);
         vfloat left = LVFU(chan[y][x - 1]);
         vfloat top = LVFU(chan[y - 1][x]);
         vfloat right = LVFU(chan[y][x + 1]);
         vfloat bottom = LVFU(chan[y + 1][x]);
         vfloat upd = cur * w1v + (left + top + right + bottom) * w2v;
-        STVFU(chan[y][x], upd);
+        STVFU(chan[y][x], vself(nz, upd, cur));
     };
 #endif
 
@@ -127,10 +127,11 @@ void heal_laplace_loop(Imagefloat *img, const array2D<int32_t> &mask)
 #ifdef ART_SIMD
             for (; x < width - 1 - 3; x += 4) {
                 vint m = _mm_loadu_si128(reinterpret_cast<vint *>(&mask[y][x]));
-                if (vtest(vnotm(vmaski_eq(m, iZEROv)))) {
-                    vnext(img->r.ptrs, x, y);
-                    vnext(img->g.ptrs, x, y);
-                    vnext(img->b.ptrs, x, y);
+                vmask nz = vnotm(vmaski_eq(m, iZEROv));
+                if (vtest(nz)) {
+                    vnext(img->r.ptrs, x, y, nz);
+                    vnext(img->g.ptrs, x, y, nz);
+                    vnext(img->b.ptrs, x, y, nz);
                 }
             }
 #endif
@@ -262,7 +263,7 @@ public:
             }
             if (intersection) {
                 // There's no intersection, we delete the Rectangle structure
-                intersection.release();
+                intersection.reset();
             }
             return false;
         }
@@ -368,6 +369,9 @@ public:
             delete image;
         }
     }
+
+    SpotBox(const SpotBox &) = delete;
+    SpotBox &operator=(const SpotBox &) = delete;
 
     SpotBox &operator/=(int v)
     {
