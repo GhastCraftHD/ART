@@ -146,7 +146,10 @@ void ImProcCoordinator::restoreParams() { params = paramsBackup; }
 // used
 void ImProcCoordinator::updatePreviewImage(int todo, bool panningRelatedChange)
 {
-    MyMutex::MyLock processingLock(mProcessing);
+    // mProcessing is locked by process(), our only caller, for the whole call
+    // (see there) -- it used to be locked here instead, but that put it inside
+    // mTweak's scope there, which could deadlock against Crop::fullUpdate()'s
+    // opposite lock order (mProcessing, then mTweak).
     int numofphases = 14;
     int readyphase = 0;
 
@@ -1511,10 +1514,27 @@ void ImProcCoordinator::process()
         params = nextParams;
         int change = changeSinceLast;
         changeSinceLast = 0;
-        if (tweakOperator) {
+        // Cache the pointer once: setTweakOperator()/unsetTweakOperator() mutate
+        // tweakOperator from the GUI thread with no locking at all, so it could
+        // otherwise flip between the two checks below (across the
+        // updatePreviewImage() call, which can take a while) and leave mTweak
+        // locked forever.
+        TweakOperator *const tweakOp = tweakOperator;
+        // mProcessing is held for the whole span below (previously it was only
+        // locked inside updatePreviewImage() itself, now hoisted out here) so it
+        // can be acquired in the same order -- mProcessing then mTweak -- as
+        // Crop::fullUpdate(), which locks mProcessing for its own whole call and
+        // mTweak around its own backup/tweak/restore sequence. Locking them in a
+        // consistent order across both call sites avoids an ABBA deadlock.
+        mProcessing.lock();
+        if (tweakOp) {
             // TWEAKING THE PROCPARAMS FOR THE SPOT ADJUSTMENT MODE
+            // mTweak stays locked until restoreParams() below: Crop::fullUpdate()
+            // takes the same lock around its own backup/tweak/restore sequence,
+            // so the two can't race on the shared params/paramsBackup.
+            mTweak.lock();
             backupParams();
-            tweakOperator->tweakParams(params);
+            tweakOp->tweakParams(params);
         }
         /* TODODANCAT see if this is needed here anymore
         else if (paramsBackup) {
@@ -1531,9 +1551,11 @@ void ImProcCoordinator::process()
 
         paramsUpdateMutex.lock();
 
-        if (tweakOperator) {
+        if (tweakOp) {
             restoreParams();
+            mTweak.unlock();
         }
+        mProcessing.unlock();
     }
 
     paramsUpdateMutex.unlock();

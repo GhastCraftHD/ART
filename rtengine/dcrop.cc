@@ -804,16 +804,29 @@ void Crop::fullUpdate()
     // If there are more update request, the following WHILE will collect it
     newUpdatePending = true;
 
-    if (parent->tweakOperator) {
+    // Cache the pointer once: setTweakOperator()/unsetTweakOperator() mutate
+    // parent->tweakOperator from the GUI thread with no locking at all, so it
+    // could otherwise flip between the two checks below (across the update(ALL)
+    // loop, which can take a while) and leave mTweak locked forever.
+    TweakOperator *const tweakOperator = parent->tweakOperator;
+
+    if (tweakOperator) {
+        // mTweak stays locked until restoreParams() below: ImProcCoordinator::process()
+        // takes the same lock around its own backup/tweak/restore sequence, so the
+        // two can't race on the shared params/paramsBackup (they used to, causing a
+        // heap-use-after-free when panning while the spot removal tool's edit mode
+        // was active).
+        parent->mTweak.lock();
         parent->backupParams();
-        parent->tweakOperator->tweakParams(parent->params);
+        tweakOperator->tweakParams(parent->params);
     }
     while (newUpdatePending) {
         newUpdatePending = false;
         update(ALL);
     }
-    if (parent->tweakOperator) {
+    if (tweakOperator) {
         parent->restoreParams();
+        parent->mTweak.unlock();
     }
 
     updating = false; // end of crop update
