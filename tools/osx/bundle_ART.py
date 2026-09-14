@@ -109,6 +109,31 @@ def getdlls(opts):
     return sorted(res.values())
 
 
+def pkgconfig_var(pkg, var):
+    """Ask pkg-config for a package variable, or None if unavailable.
+
+    Used to locate the gdk-pixbuf loaders directory: on a mixed-prefix setup
+    (e.g. GTK from one prefix, gdk-pixbuf/librsvg from another) the loaders
+    directory is not necessarily under the same prefix as libgtk-3.0.dylib,
+    and pkg-config is the only reliable way to ask gdk-pixbuf itself, since it
+    also picks up loaders (like the SVG one) that a separate formula such as
+    librsvg drops into a shared moduledir outside its own keg."""
+    try:
+        r = subprocess.run(['pkg-config', f'--variable={var}', pkg],
+                           capture_output=True, encoding='utf-8', check=True)
+    except (subprocess.CalledProcessError, OSError):
+        return None
+    val = r.stdout.strip()
+    return val or None
+
+
+def gdk_pixbuf_loaders_dir(pref):
+    d = pkgconfig_var('gdk-pixbuf-2.0', 'gdk_pixbuf_moduledir')
+    if d and os.path.isdir(d):
+        return d
+    return os.path.join(pref, 'lib/gdk-pixbuf-2.0/2.10.0/loaders')
+
+
 def getprefix(opts):
     if opts.prefix:
         return opts.prefix
@@ -168,9 +193,7 @@ def extra_files(opts):
                         'bin')]))
     return [
         ('Contents/Frameworks',
-         glob.glob(os.path.join(pref,
-                                'lib/gdk-pixbuf-2.0/2.10.0/'
-                                'loaders/*.so'))),
+         glob.glob(os.path.join(gdk_pixbuf_loaders_dir(pref), '*.so'))),
         ('Contents/Frameworks',
          glob.glob(os.path.join(pref,
                                 'lib/gtk-3.0/3*/immodules/*.so'))),
