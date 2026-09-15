@@ -722,7 +722,7 @@ void ImProcFunctions::removeSpots(rtengine::Imagefloat *img,
         }
         if (params->denoise.enabled && dnstore &&
             std::max(img->getWidth(), img->getHeight()) > 16) {
-            denoise(imgsrc, currWB, img, *dnstore, params->denoise);
+            denoise(imgsrc, currWB, img, params->denoise);
         }
     };
 

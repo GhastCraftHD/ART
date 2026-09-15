@@ -254,7 +254,7 @@ void Crop::update(int todo)
             }
 
             parent->ipf.denoise(parent->imgsrc, parent->currWB, denoiseCrop,
-                                parent->denoiseInfoStore, params.denoise);
+                                params.denoise);
 
             if (parent->adnListener &&
                 params.denoise.chrominanceMethod ==

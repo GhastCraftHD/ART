@@ -17,7 +17,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with ART.  If not, see <http://www.gnu.org/licenses/>.
  */
-// extracted and datapted from ImProcFunctions (improcfun.cc, FTblockDN.cc) of
+// extracted and datapted from ImProcFunctions (improcfun.cc, ipdenoise.cc) of
 // RawTherapee
 
 #pragma once
@@ -45,17 +45,10 @@ public:
     operator bool(void) const { return lutNoiseCurve; }
 };
 
-void Tile_calc(int tilesize, int overlap, int kall, int imwidth, int imheight,
-               int &numtiles_W, int &numtiles_H, int &tilewidth,
-               int &tileheight, int &tileWskip, int &tileHskip);
-
 void denoiseGuidedSmoothing(ImProcData &im, Imagefloat *rgb);
 
-void RGB_denoise(ImProcData &im, int kall, Imagefloat *src, Imagefloat *dst,
-                 Imagefloat *calclum, float *ch_M, float *max_r, float *max_b,
-                 bool isRAW, const procparams::DenoiseParams &dnparams,
-                 const double expcomp, const NoiseCurve &noiseLCurve,
-                 const NoiseCurve &noiseCCurve, float &nresi, float &highresi);
+void RGB_denoise(ImProcData &im, Imagefloat *src, Imagefloat *calclum,
+                 const procparams::DenoiseParams &dnparams);
 
 enum class Median {
     TYPE_3X3_SOFT,
@@ -73,16 +66,6 @@ void Median_Denoise(float **src, float **dst, float upperBound, int width,
 void Median_Denoise(float **src, float **dst, int width, int height,
                     Median medianType, int iterations, int numThreads,
                     float **buffer = nullptr);
-
-void WaveletDenoiseAll_info(
-    int levwav, wavelet_decomposition &WaveletCoeffs_a,
-    wavelet_decomposition &WaveletCoeffs_b, float **noisevarlum,
-    float **noisevarchrom, float **noisevarhue, float &chaut, int &Nb,
-    float &redaut, float &blueaut, float &maxredaut, float &maxblueaut,
-    float &minredaut, float &minblueaut, int schoice, float &chromina,
-    float &sigma, float &lumema, float &sigma_L, float &redyel, float &skinc,
-    float &nsknc, float &maxchred, float &maxchblue, float &minchred,
-    float &minchblue, int &nb, float &chau, float &chred, float &chblue);
 
 enum class BlurType { OFF, BOX, GAUSS };
 void detail_mask(const array2D<float> &src, array2D<float> &mask, float scaling,

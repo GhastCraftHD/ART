@@ -18,7 +18,7 @@
  *  2012 Emil Martinec <ejmartin@uchicago.edu>
  */
 
-#include "cplx_wavelet_dec.h"
+#include "wavelet.h"
 
 namespace rtengine {
 

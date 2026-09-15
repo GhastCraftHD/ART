@@ -315,7 +315,7 @@ private:
         }
 
         if (params.denoise.enabled) {
-            ipf.denoise(imgsrc, currWB, img, dnstore, params.denoise);
+            ipf.denoise(imgsrc, currWB, img, params.denoise);
         }
     }
 

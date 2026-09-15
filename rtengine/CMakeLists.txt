@@ -50,7 +50,6 @@ set(CAMCONSTSFILE "camconst.json")
 set(RTENGINESOURCEFILES
     badpixels.cc
     CA_correct_RT.cc
-    FTblockDN.cc
     PF_correct_RT.cc
     alpha.cc
     ahd_demosaic_RT.cc
@@ -64,7 +63,6 @@ set(RTENGINESOURCEFILES
     color.cc
     colortemp.cc
     coord.cc
-    cplx_wavelet_dec.cc
     curves.cc
     dcp.cc
     dcraw.cc
@@ -171,6 +169,7 @@ set(RTENGINESOURCEFILES
     compress.cc
     LUT3D.cc
     clutparams.cc
+    wavelet.cc
     )
 
 

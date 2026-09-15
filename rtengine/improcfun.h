@@ -23,7 +23,7 @@
 #include "LUT.h"
 #include "color.h"
 #include "coord2d.h"
-#include "cplx_wavelet_dec.h"
+#include "wavelet.h"
 #include "curves.h"
 #include "dcp.h"
 #include "gamutwarning.h"
@@ -130,7 +130,6 @@ public:
                               DenoiseInfoStore &store,
                               procparams::DenoiseParams &dnparams);
     void denoise(ImageSource *imgsrc, const ColorTemp &currWB, Imagefloat *img,
-                 const DenoiseInfoStore &store,
                  const procparams::DenoiseParams &dnparams);
 
     void defringe(Imagefloat *rgb);
