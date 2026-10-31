@@ -296,6 +296,21 @@ float ImProcFunctions::resizeScale(const ProcParams *params, int fw, int fh,
     return (float)dScale;
 }
 
+double ImProcFunctions::outputScale(const ProcParams *params, int fw, int fh)
+{
+    if (!params || !params->resize.enabled) {
+        return 1.0;
+    }
+    int imw, imh;
+    const double scale = resizeScale(params, fw, fh, imw, imh);
+    const bool allow_upscaling =
+        params->resize.allowUpscaling || params->resize.dataspec == 0;
+    if (scale < 1.0 || (scale > 1.0 && allow_upscaling)) {
+        return scale;
+    }
+    return 1.0;
+}
+
 void ImProcFunctions::resize(Imagefloat *src, Imagefloat *dst, float dScale)
 {
 #ifdef PROFILE

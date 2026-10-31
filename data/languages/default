@@ -738,6 +738,21 @@ HISTORY_MSG_TONECURVE_PERCEPTUAL_STRENGTH;Tone curve - Perceptual strength
 HISTORY_MSG_TONECURVE_CONTRAST_LEGACY;Tone curve - Contrast legacy mode
 HISTORY_MSG_TONECURVE_MODE;Tone curve - Mode
 HISTORY_MSG_TONECURVE_WHITEPOINT;Tone curve - White point
+HISTORY_MSG_WATERMARK_ANCHOR;Watermark - Position
+HISTORY_MSG_WATERMARK_COLOR;Watermark - Color
+HISTORY_MSG_WATERMARK_DEFAULTS;Watermark - Load defaults
+HISTORY_MSG_WATERMARK_ENABLED;Watermark
+HISTORY_MSG_WATERMARK_FILE;Watermark - File
+HISTORY_MSG_WATERMARK_FONT;Watermark - Font
+HISTORY_MSG_WATERMARK_INTERPOLATION;Watermark - Scaling filter
+HISTORY_MSG_WATERMARK_OPACITY;Watermark - Opacity
+HISTORY_MSG_WATERMARK_POSITION;Watermark - Position
+HISTORY_MSG_WATERMARK_REFERENCE;Watermark - Relative to
+HISTORY_MSG_WATERMARK_ROTATION;Watermark - Rotation
+HISTORY_MSG_WATERMARK_SIZE;Watermark - Size
+HISTORY_MSG_WATERMARK_TEXT;Watermark - Text
+HISTORY_MSG_WATERMARK_TYPE;Watermark - Type
+HISTORY_MSG_WATERMARK_UNIT;Watermark - Unit
 HISTORY_MSG_WBALANCE_MULT;WB - multipliers
 HISTORY_NEWSNAPSHOT;Add
 HISTORY_NEWSNAPSHOT_TOOLTIP;Shortcut: <b>%shortcut(editor.add_snapshot)%</b>
@@ -1029,6 +1044,7 @@ PARTIALPASTE_TM_LOG;Log tone mapping
 PARTIALPASTE_TONE_EQUALIZER;Tone equalizer
 PARTIALPASTE_VIBRANCE;Vibrance
 PARTIALPASTE_VIGNETTING;Vignetting correction
+PARTIALPASTE_WATERMARK;Watermark
 PARTIALPASTE_WHITEBALANCE;White balance
 PREFERENCES_ADD;Add
 PREFERENCES_ADJUSTER_FORCE_LINEAR;Force linear scale in adjuster sliders
@@ -2094,6 +2110,62 @@ TP_VIGNETTING_CENTER_Y;Center Y
 TP_VIGNETTING_LABEL;Vignetting Correction
 TP_VIGNETTING_RADIUS;Radius
 TP_VIGNETTING_STRENGTH;Strength
+TP_WATERMARK_ANCHOR;Alignment
+TP_WATERMARK_ANCHOR_BOTTOM;Bottom center
+TP_WATERMARK_ANCHOR_BOTTOMLEFT;Bottom left
+TP_WATERMARK_ANCHOR_BOTTOMRIGHT;Bottom right
+TP_WATERMARK_ANCHOR_CENTER;Center
+TP_WATERMARK_ANCHOR_LEFT;Center left
+TP_WATERMARK_ANCHOR_RIGHT;Center right
+TP_WATERMARK_ANCHOR_TOOLTIP;Point of the image (or canvas) the position X/Y refers to. The matching point of the watermark is placed there, shifted by X/Y.
+TP_WATERMARK_ANCHOR_TOP;Top center
+TP_WATERMARK_ANCHOR_TOPLEFT;Top left
+TP_WATERMARK_ANCHOR_TOPRIGHT;Top right
+TP_WATERMARK_COLOR;Color
+TP_WATERMARK_DEFAULT_LOAD;Load defaults
+TP_WATERMARK_DEFAULT_LOAD_TOOLTIP;Applies your saved default watermark settings.
+TP_WATERMARK_DEFAULT_NONE;No default watermark settings have been saved yet.
+TP_WATERMARK_DEFAULT_SAVE;Save as default
+TP_WATERMARK_DEFAULT_SAVE_ERROR;Could not save the default watermark settings to:
+TP_WATERMARK_DEFAULT_SAVE_TOOLTIP;Saves the current watermark settings as your defaults. They are used when the watermark is enabled for the first time on an image, and by the reset button.
+TP_WATERMARK_EDIT_TOOLTIP;Move the watermark in the preview.\nIt snaps to the 9 alignment points (hold <b>Shift</b> to move it freely), and the alignment follows the area it is moved to.
+TP_WATERMARK_FILE;File
+TP_WATERMARK_FILE_ERROR;Cannot load the file
+TP_WATERMARK_FILTER_IMAGES;Images
+TP_WATERMARK_FILTER_SVG;SVG files
+TP_WATERMARK_FONT;Font
+TP_WATERMARK_INTERPOLATION;Scaling filter
+TP_WATERMARK_INTERPOLATION_BICUBIC;Bicubic
+TP_WATERMARK_INTERPOLATION_BILINEAR;Bilinear
+TP_WATERMARK_INTERPOLATION_GOOD;Good
+TP_WATERMARK_INTERPOLATION_NEAREST;None (pixel art)
+TP_WATERMARK_INTERPOLATION_TOOLTIP;How the image is scaled to the watermark size.\n<b>None</b>: hard pixel edges, for pixel art.\n<b>Bilinear</b>: fast, soft.\n<b>Good</b>: averages pixels when shrinking, bilinear when enlarging.\n<b>Bicubic</b>: sharper, best for enlarging photos and logos.
+TP_WATERMARK_LABEL;Watermark
+TP_WATERMARK_OPACITY;Opacity (%)
+TP_WATERMARK_POSX_PERCENT;X (%)
+TP_WATERMARK_POSX_PX;X (px)
+TP_WATERMARK_POSY_PERCENT;Y (%)
+TP_WATERMARK_POSY_PX;Y (px)
+TP_WATERMARK_POS_TOOLTIP;Offset of the watermark from the alignment point. X grows to the right, Y downwards: e.g. bottom right with X = Y = -30 px puts it 30 px away from the corner.
+TP_WATERMARK_REFERENCE;Relative to
+TP_WATERMARK_REFERENCE_CANVAS;Whole canvas
+TP_WATERMARK_REFERENCE_IMAGE;Image
+TP_WATERMARK_REFERENCE_TOOLTIP;Image: the watermark is placed on the image.\nWhole canvas: the watermark is placed on the whole output, including an outside border (e.g. to put a signature into the border).
+TP_WATERMARK_ROTATION;Rotation (°)
+TP_WATERMARK_SIZE_PERCENT;Width (%)
+TP_WATERMARK_SIZE_PX;Width (px)
+TP_WATERMARK_SIZE_TOOLTIP;Text: height of the font. Image/SVG: width of the watermark (the aspect ratio is kept).\nPixels refer to the output image (after resizing), percent to the shorter side of the reference area.
+TP_WATERMARK_TEXT;Text
+TP_WATERMARK_TEXTSIZE_PERCENT;Font size (%)
+TP_WATERMARK_TEXTSIZE_PX;Font size (px)
+TP_WATERMARK_TYPE;Type
+TP_WATERMARK_TYPE_IMAGE;Image
+TP_WATERMARK_TYPE_SVG;SVG
+TP_WATERMARK_TYPE_TEXT;Text
+TP_WATERMARK_UNIT;Unit
+TP_WATERMARK_UNIT_PERCENT;Percent
+TP_WATERMARK_UNIT_PIXELS;Pixels
+TP_WATERMARK_UNIT_TOOLTIP;Pixels: fixed sizes in the output image (after resizing).\nPercent: relative to the shorter side of the reference area, so the watermark looks the same at any export size.
 TP_WBALANCE_AUTO;Auto
 TP_WBALANCE_CAMERA;As shot
 TP_WBALANCE_CUSTOM;Custom temperature

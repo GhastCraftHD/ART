@@ -299,6 +299,7 @@ public:
                                  const procparams::ColorManagementParams &cmp,
                                  const procparams::CropParams &cp,
                                  const procparams::BorderParams &bp,
+                                 const procparams::WatermarkParams &wp,
                                  double out_scale, int cx, int cy, int cw,
                                  int ch, int skip) = 0;
     virtual void getWindow(int &cx, int &cy, int &cw, int &ch, int &skip) = 0;

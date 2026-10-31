@@ -1261,6 +1261,53 @@ struct BorderParams {
                    double &bottom) const;
 };
 
+struct WatermarkParams {
+    enum class Type { TEXT, IMAGE, SVG };
+    enum class Unit { PIXELS, PERCENT };
+    enum class Anchor {
+        TOP_LEFT, TOP, TOP_RIGHT,
+        LEFT, CENTER, RIGHT,
+        BOTTOM_LEFT, BOTTOM, BOTTOM_RIGHT
+    };
+    enum class Reference { IMAGE, CANVAS };
+    enum class Interpolation { NEAREST, BILINEAR, GOOD, BICUBIC };
+
+    bool enabled;
+    Type type;
+    Glib::ustring text;
+    Glib::ustring font;
+    double red;
+    double green;
+    double blue;
+    Glib::ustring imageFile;
+    Glib::ustring svgFile;
+    Interpolation interpolation;
+    Unit unit;
+    int size;
+    double sizePercent;
+    Anchor anchor;
+    int posX;
+    int posY;
+    double posXPercent;
+    double posYPercent;
+    Reference reference;
+    double opacity;
+    double rotation;
+
+    WatermarkParams();
+
+    const Glib::ustring &sourceFile() const
+    {
+        static const Glib::ustring none;
+        return type == Type::IMAGE ? imageFile
+               : type == Type::SVG ? svgFile
+                                   : none;
+    }
+
+    bool operator==(const WatermarkParams &other) const;
+    bool operator!=(const WatermarkParams &other) const;
+};
+
 struct SmoothingParams: public MaskableParams {
     struct Region {
         enum class Channel { LUMINANCE, CHROMINANCE, RGB };
@@ -1624,6 +1671,7 @@ public:
     DehazeParams dehaze;                 ///< dehaze parameters
     GrainParams grain;
     BorderParams border;
+    WatermarkParams watermark;
     SmoothingParams smoothing;
     ColorCorrectionParams colorcorrection;
     FilmNegativeParams filmNegative;

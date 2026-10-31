@@ -127,6 +127,8 @@ class CropWindow: public LWButtonListener,
     void updateCursor(int x, int y, int bstate);
     void drawDecoration(Cairo::RefPtr<Cairo::Context> cr);
     void drawBorderOverlay(Cairo::RefPtr<Cairo::Context> cr);
+    void drawWatermarkOverlay(Cairo::RefPtr<Cairo::Context> cr);
+    bool getFinalImageRect(double &x, double &y, double &w, double &h);
     void drawStraightenGuide(Cairo::RefPtr<Cairo::Context> cr);
     void drawScaledSpotRectangle(Cairo::RefPtr<Cairo::Context> cr,
                                  int rectSize);

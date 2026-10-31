@@ -754,6 +754,21 @@ HISTORY_MSG_TONE_EQUALIZER_ENABLED;Tonwertequalizer
 HISTORY_MSG_TONE_EQUALIZER_PIVOT;Tonwertequalizer - Versatz
 HISTORY_MSG_TONE_EQUALIZER_REGULARIZATION;Tonwertequalizer - Filterdiffusion
 HISTORY_MSG_TONE_EQUALIZER_SHOW_COLOR_MAP;Tonwertequalizer - Belichtungsmaske
+HISTORY_MSG_WATERMARK_ANCHOR;Wasserzeichen - Position
+HISTORY_MSG_WATERMARK_COLOR;Wasserzeichen - Farbe
+HISTORY_MSG_WATERMARK_DEFAULTS;Wasserzeichen - Standard geladen
+HISTORY_MSG_WATERMARK_ENABLED;Wasserzeichen
+HISTORY_MSG_WATERMARK_FILE;Wasserzeichen - Datei
+HISTORY_MSG_WATERMARK_FONT;Wasserzeichen - Schrift
+HISTORY_MSG_WATERMARK_INTERPOLATION;Wasserzeichen - Skalierungsfilter
+HISTORY_MSG_WATERMARK_OPACITY;Wasserzeichen - Deckkraft
+HISTORY_MSG_WATERMARK_POSITION;Wasserzeichen - Position
+HISTORY_MSG_WATERMARK_REFERENCE;Wasserzeichen - Bezug
+HISTORY_MSG_WATERMARK_ROTATION;Wasserzeichen - Drehung
+HISTORY_MSG_WATERMARK_SIZE;Wasserzeichen - Größe
+HISTORY_MSG_WATERMARK_TEXT;Wasserzeichen - Text
+HISTORY_MSG_WATERMARK_TYPE;Wasserzeichen - Typ
+HISTORY_MSG_WATERMARK_UNIT;Wasserzeichen - Einheit
 HISTORY_MSG_WBALANCE_MULT;Weißabgleich - Faktoren
 HISTORY_NEWSNAPSHOT;Hinzufügen
 HISTORY_NEWSNAPSHOT_TOOLTIP;Taste: <b>%shortcut(editor.add_snapshot)%</b>
@@ -1045,6 +1060,7 @@ PARTIALPASTE_TONECURVE;Tone Kurven
 PARTIALPASTE_TONE_EQUALIZER;Tonwertequalizer
 PARTIALPASTE_VIBRANCE;Dynamik
 PARTIALPASTE_VIGNETTING;Vignettierungskorrektur
+PARTIALPASTE_WATERMARK;Wasserzeichen
 PARTIALPASTE_WHITEBALANCE;Weißabgleich
 PREFERENCES_ADD;Hinzufügen
 PREFERENCES_ADJUSTER_FORCE_LINEAR;Lineare Skala bei Einstellungsreglern erzwingen.
@@ -2089,6 +2105,62 @@ TP_VIGNETTING_CENTER_Y;Zentrum Y
 TP_VIGNETTING_LABEL;Vignettierungskorrektur
 TP_VIGNETTING_RADIUS;Radius
 TP_VIGNETTING_STRENGTH;Faktor
+TP_WATERMARK_ANCHOR;Ausrichtung
+TP_WATERMARK_ANCHOR_BOTTOM;Unten Mitte
+TP_WATERMARK_ANCHOR_BOTTOMLEFT;Unten links
+TP_WATERMARK_ANCHOR_BOTTOMRIGHT;Unten rechts
+TP_WATERMARK_ANCHOR_CENTER;Mitte
+TP_WATERMARK_ANCHOR_LEFT;Mitte links
+TP_WATERMARK_ANCHOR_RIGHT;Mitte rechts
+TP_WATERMARK_ANCHOR_TOOLTIP;Punkt des Bildes (bzw. der Leinwand), auf den sich X/Y beziehen. Der passende Punkt des Wasserzeichens wird dort platziert, verschoben um X/Y.
+TP_WATERMARK_ANCHOR_TOP;Oben Mitte
+TP_WATERMARK_ANCHOR_TOPLEFT;Oben links
+TP_WATERMARK_ANCHOR_TOPRIGHT;Oben rechts
+TP_WATERMARK_COLOR;Farbe
+TP_WATERMARK_DEFAULT_LOAD;Standard laden
+TP_WATERMARK_DEFAULT_LOAD_TOOLTIP;Übernimmt deine gespeicherten Standard-Einstellungen für das Wasserzeichen.
+TP_WATERMARK_DEFAULT_NONE;Es wurden noch keine Standard-Einstellungen für das Wasserzeichen gespeichert.
+TP_WATERMARK_DEFAULT_SAVE;Als Standard speichern
+TP_WATERMARK_DEFAULT_SAVE_ERROR;Die Standard-Einstellungen konnten nicht gespeichert werden:
+TP_WATERMARK_DEFAULT_SAVE_TOOLTIP;Speichert die aktuellen Einstellungen als deinen Standard. Er wird verwendet, wenn das Wasserzeichen bei einem Bild zum ersten Mal aktiviert wird, und beim Zurücksetzen.
+TP_WATERMARK_EDIT_TOOLTIP;Wasserzeichen in der Vorschau verschieben.\nEs rastet an den 9 Ausrichtungspunkten ein (mit <b>Shift</b> frei verschieben), und die Ausrichtung folgt dem Bereich, in den es geschoben wird.
+TP_WATERMARK_FILE;Datei
+TP_WATERMARK_FILE_ERROR;Datei kann nicht geladen werden
+TP_WATERMARK_FILTER_IMAGES;Bilder
+TP_WATERMARK_FILTER_SVG;SVG-Dateien
+TP_WATERMARK_FONT;Schrift
+TP_WATERMARK_INTERPOLATION;Skalierungsfilter
+TP_WATERMARK_INTERPOLATION_BICUBIC;Kubisch
+TP_WATERMARK_INTERPOLATION_BILINEAR;Bilinear
+TP_WATERMARK_INTERPOLATION_GOOD;Gut
+TP_WATERMARK_INTERPOLATION_NEAREST;Keiner (Pixelart)
+TP_WATERMARK_INTERPOLATION_TOOLTIP;Wie das Bild auf die Größe des Wasserzeichens skaliert wird.\n<b>Keiner</b>: harte Pixelkanten, für Pixelart.\n<b>Bilinear</b>: schnell, weich.\n<b>Gut</b>: mittelt Pixel beim Verkleinern, bilinear beim Vergrößern.\n<b>Kubisch</b>: schärfer, am besten zum Vergrößern von Fotos und Logos.
+TP_WATERMARK_LABEL;Wasserzeichen
+TP_WATERMARK_OPACITY;Deckkraft (%)
+TP_WATERMARK_POSX_PERCENT;X (%)
+TP_WATERMARK_POSX_PX;X (px)
+TP_WATERMARK_POSY_PERCENT;Y (%)
+TP_WATERMARK_POSY_PX;Y (px)
+TP_WATERMARK_POS_TOOLTIP;Versatz des Wasserzeichens vom Ausrichtungspunkt. X wächst nach rechts, Y nach unten: z. B. unten rechts mit X = Y = -30 px setzt es 30 px von der Ecke entfernt.
+TP_WATERMARK_REFERENCE;Bezug
+TP_WATERMARK_REFERENCE_CANVAS;Gesamte Leinwand
+TP_WATERMARK_REFERENCE_IMAGE;Bild
+TP_WATERMARK_REFERENCE_TOOLTIP;Bild: Das Wasserzeichen wird auf dem Bild platziert.\nGesamte Leinwand: Das Wasserzeichen wird auf dem gesamten Export platziert, inklusive Außenrahmen (z. B. für eine Signatur im Rahmen).
+TP_WATERMARK_ROTATION;Drehung (°)
+TP_WATERMARK_SIZE_PERCENT;Breite (%)
+TP_WATERMARK_SIZE_PX;Breite (px)
+TP_WATERMARK_SIZE_TOOLTIP;Text: Schrifthöhe. Bild/SVG: Breite des Wasserzeichens (das Seitenverhältnis bleibt erhalten).\nPixel beziehen sich auf das exportierte Bild (nach der Skalierung), Prozent auf die kürzere Seite des Bezugsbereichs.
+TP_WATERMARK_TEXT;Text
+TP_WATERMARK_TEXTSIZE_PERCENT;Schriftgröße (%)
+TP_WATERMARK_TEXTSIZE_PX;Schriftgröße (px)
+TP_WATERMARK_TYPE;Typ
+TP_WATERMARK_TYPE_IMAGE;Bild
+TP_WATERMARK_TYPE_SVG;SVG
+TP_WATERMARK_TYPE_TEXT;Text
+TP_WATERMARK_UNIT;Einheit
+TP_WATERMARK_UNIT_PERCENT;Prozent
+TP_WATERMARK_UNIT_PIXELS;Pixel
+TP_WATERMARK_UNIT_TOOLTIP;Pixel: feste Größen im exportierten Bild (nach der Skalierung).\nProzent: relativ zur kürzeren Seite des Bezugsbereichs; das Wasserzeichen wirkt so bei jeder Exportgröße gleich.
 TP_WBALANCE_AUTO;Automatisch
 TP_WBALANCE_CAMERA;Kamera
 TP_WBALANCE_CUSTOM;Benutzerdefiniert

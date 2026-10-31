@@ -489,9 +489,16 @@ private:
             ipf.prsharpening(img);
         }
 
+        const int pre_border_w = img->getWidth();
+        const int pre_border_h = img->getHeight();
         if (params.border.enabled) {
             ART_PROFILE_SCOPE("border");
             img = ipf.applyBorder(img);
+        }
+
+        if (params.watermark.enabled) {
+            ART_PROFILE_SCOPE("watermark");
+            ipf.applyWatermark(img, pre_border_w, pre_border_h);
         }
 
         sanitize("pipeline");

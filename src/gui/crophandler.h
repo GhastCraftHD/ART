@@ -94,6 +94,7 @@ public:
                          const art::engine::procparams::ColorManagementParams &cmp,
                          const art::engine::procparams::CropParams &cp,
                          const art::engine::procparams::BorderParams &bp,
+                         const art::engine::procparams::WatermarkParams &wp,
                          double out_scale, int cx, int cy, int cw, int ch,
                          int skip) override;
     void getWindow(int &cwx, int &cwy, int &cww, int &cwh, int &cskip) override;
@@ -105,6 +106,7 @@ public:
 
     art::engine::procparams::CropParams cropParams;
     art::engine::procparams::BorderParams borderParams;
+    art::engine::procparams::WatermarkParams watermarkParams;
     double borderOutScale = 1.0;
     art::engine::procparams::ColorManagementParams colorParams;
     Glib::RefPtr<Gdk::Pixbuf>

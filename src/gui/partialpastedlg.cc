@@ -85,6 +85,7 @@ std::vector<ToggleInfo> get_toggles(ParamsEdited &pedited)
         {"PARTIALPASTE_RESIZE", &pedited.resize, 5, nullptr},
         {"PARTIALPASTE_PRSHARPENING", &pedited.prsharpening, 5, nullptr},
         {"PARTIALPASTE_BORDER", &pedited.border, 5, nullptr},
+        {"PARTIALPASTE_WATERMARK", &pedited.watermark, 5, nullptr},
         {"PARTIALPASTE_PERSPECTIVE", &pedited.perspective, 5, nullptr},
         {"PARTIALPASTE_COMMONTRANSFORMPARAMS", &pedited.commonTrans, 5,
          nullptr},

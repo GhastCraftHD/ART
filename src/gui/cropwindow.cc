@@ -18,6 +18,7 @@
  *  along with ART.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "cropwindow.h"
+#include "../engine/watermark.h"
 #include "shortcutsmanager.h"
 
 #include <iomanip>
@@ -1858,6 +1859,7 @@ void CropWindow::expose(Cairo::RefPtr<Cairo::Context> cr)
     MyMutex::MyLock lock(cropHandler.cimg);
 
     bool isPreviewImg = false;
+    bool overlays_drawn = false;
     int deviceScale = cropHandler.getDisplayScale();
 
     if (decorated) {
@@ -2255,6 +2257,12 @@ void CropWindow::expose(Cairo::RefPtr<Cairo::Context> cr)
                 drawObservedFrame(cr);
             }
 
+            if (iarea->getToolMode() != TMCropSelect) {
+                drawBorderOverlay(cr);
+                drawWatermarkOverlay(cr);
+                overlays_drawn = true;
+            }
+
             EditSubscriber *editSubscriber = iarea->getCurrSubscriber();
             if (editSubscriber &&
                 editSubscriber->getEditingType() == ET_OBJECTS &&
@@ -2373,9 +2381,10 @@ void CropWindow::expose(Cairo::RefPtr<Cairo::Context> cr)
         }
     }
 
-    if (iarea->getToolMode() != TMCropSelect &&
+    if (!overlays_drawn && iarea->getToolMode() != TMCropSelect &&
         (cropHandler.cropPixbuf || iarea->getPreviewHandler())) {
         drawBorderOverlay(cr);
+        drawWatermarkOverlay(cr);
     }
 
     if (state == SRotateSelecting) {
@@ -2411,6 +2420,66 @@ void CropWindow::expose(Cairo::RefPtr<Cairo::Context> cr)
     //    printf ("etime --> %d, %d\n", t2.etime (t1), t4.etime (t3));
 }
 
+bool CropWindow::getFinalImageRect(double &x, double &y, double &w,
+                                   double &h)
+{
+    x = y = w = h = 0;
+    if (cropHandler.cropParams.enabled) {
+        x = cropHandler.cropParams.x;
+        y = cropHandler.cropParams.y;
+        w = cropHandler.cropParams.w;
+        h = cropHandler.cropParams.h;
+    } else {
+        int fw = 0, fh = 0;
+        cropHandler.getFullImageSize(fw, fh);
+        w = fw;
+        h = fh;
+    }
+    return w > 0 && h > 0;
+}
+
+void CropWindow::drawWatermarkOverlay(Cairo::RefPtr<Cairo::Context> cr)
+{
+    using art::engine::procparams::WatermarkParams;
+    const WatermarkParams &wp = cropHandler.watermarkParams;
+    if (!wp.enabled) {
+        return;
+    }
+
+    int fw = 0, fh = 0;
+    cropHandler.getFullImageSize(fw, fh);
+    const double out_scale =
+        cropHandler.borderOutScale > 0 ? cropHandler.borderOutScale : 1.0;
+    art::engine::WatermarkFrame f;
+    if (!art::engine::getWatermarkFrame(cropHandler.cropParams,
+                                        cropHandler.borderParams, wp, fw, fh,
+                                        out_scale, f)) {
+        return;
+    }
+
+    int cropX, cropY;
+    cropHandler.getPosition(cropX, cropY);
+    const double zoom = getScreenZoom();
+    const double ox = xpos + imgAreaX + imgX;
+    const double oy = ypos + imgAreaY + imgY;
+    const auto tx = [&](double v) { return ox + (v - cropX) * zoom; };
+    const auto ty = [&](double v) { return oy + (v - cropY) * zoom; };
+
+    cr->save();
+    cr->rectangle(xpos + imgAreaX, ypos + imgAreaY, imgAreaW, imgAreaH);
+    cr->clip();
+    cr->rectangle(tx(f.canvas_x), ty(f.canvas_y), f.canvas_w * zoom,
+                  f.canvas_h * zoom);
+    cr->clip();
+
+    cr->translate(tx(f.ref_x), ty(f.ref_y));
+    cr->scale(zoom / out_scale, zoom / out_scale);
+    art::engine::drawWatermark(cr->cobj(), wp, f.ref_w * out_scale,
+                               f.ref_h * out_scale);
+
+    cr->restore();
+}
+
 void CropWindow::drawBorderOverlay(Cairo::RefPtr<Cairo::Context> cr)
 {
     using art::engine::procparams::BorderParams;
@@ -2419,19 +2488,8 @@ void CropWindow::drawBorderOverlay(Cairo::RefPtr<Cairo::Context> cr)
         return;
     }
 
-    double rx = 0, ry = 0, rw = 0, rh = 0;
-    if (cropHandler.cropParams.enabled) {
-        rx = cropHandler.cropParams.x;
-        ry = cropHandler.cropParams.y;
-        rw = cropHandler.cropParams.w;
-        rh = cropHandler.cropParams.h;
-    } else {
-        int fw = 0, fh = 0;
-        cropHandler.getFullImageSize(fw, fh);
-        rw = fw;
-        rh = fh;
-    }
-    if (rw <= 0 || rh <= 0) {
+    double rx, ry, rw, rh;
+    if (!getFinalImageRect(rx, ry, rw, rh)) {
         return;
     }
 

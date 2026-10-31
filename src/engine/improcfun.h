@@ -188,6 +188,7 @@ public:
     void logEncoding(Imagefloat *rgb);
     void filmGrain(Imagefloat *rgb);
     Imagefloat *applyBorder(Imagefloat *img);
+    void applyWatermark(Imagefloat *img, int pre_border_w, int pre_border_h);
     bool guidedSmoothing(Imagefloat *rgb);
     void hslEqualizer(Imagefloat *rgb);
     void channelMixer(Imagefloat *rgb);
@@ -237,8 +238,9 @@ public:
     bool needsPCVignetting();
     bool stage0NeedsFullImage();
 
-    float resizeScale(const ProcParams *params, int fw, int fh, int &imw,
-                      int &imh);
+    static float resizeScale(const ProcParams *params, int fw, int fh,
+                             int &imw, int &imh);
+    static double outputScale(const ProcParams *params, int fw, int fh);
 
     void getAutoLog(ImageSource *imgsrc, procparams::LogEncodingParams &params);
 

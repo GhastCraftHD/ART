@@ -560,21 +560,12 @@ void Crop::updateImpl(int todo)
                    3 * finalW);
         }
 
-        double out_scale = 1.0;
-        if (params.resize.enabled) {
-            int imw, imh;
-            out_scale = parent->ipf.resizeScale(&params, parent->fw,
-                                                parent->fh, imw, imh);
-            const bool allow_upscaling = params.resize.allowUpscaling ||
-                                         params.resize.dataspec == 0;
-            if (!(out_scale < 1.0 || (out_scale > 1.0 && allow_upscaling))) {
-                out_scale = 1.0;
-            }
-        }
+        const double out_scale =
+            ImProcFunctions::outputScale(&params, parent->fw, parent->fh);
 
         cropImageListener->setDetailedCrop(final, finaltrue, params.icm,
                                            params.crop, params.border,
-                                           out_scale, rqcropx, rqcropy,
+                                           params.watermark, out_scale, rqcropx, rqcropy,
                                            rqcropw, rqcroph, skip);
         delete final;
         delete finaltrue;

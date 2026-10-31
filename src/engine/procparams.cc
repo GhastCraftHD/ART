@@ -445,6 +445,31 @@ bool saveToKeyfile(const Glib::ustring &group_name, const Glib::ustring &key,
     return false;
 }
 
+const std::map<WatermarkParams::Anchor, const char *> &
+watermark_anchor_names()
+{
+    using A = WatermarkParams::Anchor;
+    static const std::map<A, const char *> names = {
+        {A::TOP_LEFT, "TopLeft"},       {A::TOP, "Top"},
+        {A::TOP_RIGHT, "TopRight"},     {A::LEFT, "Left"},
+        {A::CENTER, "Center"},          {A::RIGHT, "Right"},
+        {A::BOTTOM_LEFT, "BottomLeft"}, {A::BOTTOM, "Bottom"},
+        {A::BOTTOM_RIGHT, "BottomRight"}};
+    return names;
+}
+
+const std::map<WatermarkParams::Interpolation, const char *> &
+watermark_interpolation_names()
+{
+    using I = WatermarkParams::Interpolation;
+    static const std::map<I, const char *> names = {
+        {I::NEAREST, "Nearest"},
+        {I::BILINEAR, "Bilinear"},
+        {I::GOOD, "Good"},
+        {I::BICUBIC, "Bicubic"}};
+    return names;
+}
+
 Glib::ustring filenameToUri(const Glib::ustring &fname,
                             const Glib::ustring &basedir)
 {
@@ -2436,6 +2461,36 @@ void BorderParams::getWidths(double w, double h, double out_scale,
     }
 }
 
+WatermarkParams::WatermarkParams()
+    : enabled(false), type(Type::TEXT), text("\u00A9 "), font("Sans"),
+      red(1.0), green(1.0), blue(1.0), imageFile(""), svgFile(""),
+      interpolation(Interpolation::GOOD), unit(Unit::PERCENT),
+      size(60), sizePercent(4.0), anchor(Anchor::BOTTOM_RIGHT), posX(-30),
+      posY(-30), posXPercent(-2.0), posYPercent(-2.0),
+      reference(Reference::IMAGE), opacity(60.0), rotation(0.0)
+{
+}
+
+bool WatermarkParams::operator==(const WatermarkParams &other) const
+{
+    return enabled == other.enabled && type == other.type &&
+           text == other.text && font == other.font && red == other.red &&
+           green == other.green && blue == other.blue &&
+           imageFile == other.imageFile && svgFile == other.svgFile &&
+           interpolation == other.interpolation && unit == other.unit && size == other.size &&
+           sizePercent == other.sizePercent && anchor == other.anchor &&
+           posX == other.posX && posY == other.posY &&
+           posXPercent == other.posXPercent &&
+           posYPercent == other.posYPercent &&
+           reference == other.reference && opacity == other.opacity &&
+           rotation == other.rotation;
+}
+
+bool WatermarkParams::operator!=(const WatermarkParams &other) const
+{
+    return !(*this == other);
+}
+
 SmoothingParams::Region::Region()
     : mode(Mode::GUIDED), channel(Channel::RGB), radius(0), sigma(0),
       epsilon(0), iterations(1), falloff(1), nldetail(50), nlstrength(0),
@@ -2894,6 +2949,7 @@ void ProcParams::setDefaults()
     dehaze = DehazeParams();
     grain = GrainParams();
     border = BorderParams();
+    watermark = WatermarkParams();
     smoothing = SmoothingParams();
     colorcorrection = ColorCorrectionParams();
     raw = RAWParams();
@@ -3725,6 +3781,48 @@ int ProcParams::save(ProgressListener *pl, bool save_general, KeyFile &keyFile,
                           std::vector<double>{border.red, border.green,
                                               border.blue},
                           keyFile);
+        }
+
+        if (RELEVANT_(watermark)) {
+            const auto &w = watermark;
+            saveToKeyfile("Watermark", "Enabled", w.enabled, keyFile);
+            saveToKeyfile("Watermark", "Type",
+                          {{WatermarkParams::Type::TEXT, "Text"},
+                           {WatermarkParams::Type::IMAGE, "Image"},
+                           {WatermarkParams::Type::SVG, "SVG"}},
+                          w.type, keyFile);
+            saveToKeyfile("Watermark", "Text", w.text, keyFile);
+            saveToKeyfile("Watermark", "Font", w.font, keyFile);
+            saveToKeyfile("Watermark", "Color",
+                          std::vector<double>{w.red, w.green, w.blue},
+                          keyFile);
+            saveToKeyfile("Watermark", "ImageFile",
+                          filenameToUri(w.imageFile, basedir), keyFile);
+            saveToKeyfile("Watermark", "SVGFile",
+                          filenameToUri(w.svgFile, basedir), keyFile);
+            saveToKeyfile("Watermark", "Interpolation",
+                          watermark_interpolation_names(), w.interpolation,
+                          keyFile);
+            saveToKeyfile("Watermark", "Unit",
+                          {{WatermarkParams::Unit::PIXELS, "Pixels"},
+                           {WatermarkParams::Unit::PERCENT, "Percent"}},
+                          w.unit, keyFile);
+            saveToKeyfile("Watermark", "Size", w.size, keyFile);
+            saveToKeyfile("Watermark", "SizePercent", w.sizePercent, keyFile);
+            saveToKeyfile("Watermark", "Anchor", watermark_anchor_names(),
+                          w.anchor, keyFile);
+            saveToKeyfile("Watermark", "PositionX", w.posX, keyFile);
+            saveToKeyfile("Watermark", "PositionY", w.posY, keyFile);
+            saveToKeyfile("Watermark", "PositionXPercent", w.posXPercent,
+                          keyFile);
+            saveToKeyfile("Watermark", "PositionYPercent", w.posYPercent,
+                          keyFile);
+            saveToKeyfile("Watermark", "Reference",
+                          {{WatermarkParams::Reference::IMAGE, "Image"},
+                           {WatermarkParams::Reference::CANVAS, "Canvas"}},
+                          w.reference, keyFile);
+            saveToKeyfile("Watermark", "Opacity", w.opacity, keyFile);
+            saveToKeyfile("Watermark", "Rotation", w.rotation, keyFile);
         }
 
         // Smoothing
@@ -5477,6 +5575,93 @@ int ProcParams::load(ProgressListener *pl, bool load_general,
             }
         }
 
+        if (keyFile.has_group("Watermark") && RELEVANT_(watermark)) {
+            auto &w = watermark;
+            assignFromKeyfile(keyFile, "Watermark", "Enabled", w.enabled);
+            assignFromKeyfile(keyFile, "Watermark", "Type",
+                              {{"Text", WatermarkParams::Type::TEXT},
+                               {"Image", WatermarkParams::Type::IMAGE},
+                               {"SVG", WatermarkParams::Type::SVG}},
+                              w.type);
+            assignFromKeyfile(keyFile, "Watermark", "Text", w.text);
+            assignFromKeyfile(keyFile, "Watermark", "Font", w.font);
+            std::vector<float> c;
+            if (assignFromKeyfile(keyFile, "Watermark", "Color", c) &&
+                c.size() == 3) {
+                w.red = std::max(0.0, std::min(1.0, double(c[0])));
+                w.green = std::max(0.0, std::min(1.0, double(c[1])));
+                w.blue = std::max(0.0, std::min(1.0, double(c[2])));
+            }
+            if (assignFromKeyfile(keyFile, "Watermark", "ImageFile",
+                                  w.imageFile)) {
+                w.imageFile = filenameFromUri(w.imageFile, basedir);
+            }
+            if (assignFromKeyfile(keyFile, "Watermark", "SVGFile", w.svgFile)) {
+                w.svgFile = filenameFromUri(w.svgFile, basedir);
+            }
+            Glib::ustring legacy_file;
+            if (!keyFile.has_key("Watermark", "ImageFile") &&
+                !keyFile.has_key("Watermark", "SVGFile") &&
+                assignFromKeyfile(keyFile, "Watermark", "File", legacy_file) &&
+                !legacy_file.empty()) {
+                legacy_file = filenameFromUri(legacy_file, basedir);
+                const Glib::ustring lc = legacy_file.lowercase();
+                const bool svg =
+                    w.type == WatermarkParams::Type::SVG ||
+                    (w.type == WatermarkParams::Type::TEXT && lc.size() > 4 &&
+                     lc.substr(lc.size() - 4) == ".svg");
+                (svg ? w.svgFile : w.imageFile) = legacy_file;
+            }
+            std::map<std::string, WatermarkParams::Interpolation> interps;
+            for (const auto &p : watermark_interpolation_names()) {
+                interps[p.second] = p.first;
+            }
+            assignFromKeyfile(keyFile, "Watermark", "Interpolation", interps,
+                              w.interpolation);
+            assignFromKeyfile(keyFile, "Watermark", "Unit",
+                              {{"Pixels", WatermarkParams::Unit::PIXELS},
+                               {"Percent", WatermarkParams::Unit::PERCENT}},
+                              w.unit);
+            assignFromKeyfile(keyFile, "Watermark", "Size", w.size);
+            assignFromKeyfile(keyFile, "Watermark", "SizePercent",
+                              w.sizePercent);
+            std::map<std::string, WatermarkParams::Anchor> anchors;
+            for (const auto &p : watermark_anchor_names()) {
+                anchors[p.second] = p.first;
+            }
+            assignFromKeyfile(keyFile, "Watermark", "Anchor", anchors,
+                              w.anchor);
+            assignFromKeyfile(keyFile, "Watermark", "PositionX", w.posX);
+            assignFromKeyfile(keyFile, "Watermark", "PositionY", w.posY);
+            assignFromKeyfile(keyFile, "Watermark", "PositionXPercent",
+                              w.posXPercent);
+            assignFromKeyfile(keyFile, "Watermark", "PositionYPercent",
+                              w.posYPercent);
+            if (!keyFile.has_key("Watermark", "PositionX") &&
+                !keyFile.has_key("Watermark", "PositionXPercent")) {
+                int ox = 30, oy = 30;
+                double oxp = 2.0, oyp = 2.0;
+                assignFromKeyfile(keyFile, "Watermark", "OffsetX", ox);
+                assignFromKeyfile(keyFile, "Watermark", "OffsetY", oy);
+                assignFromKeyfile(keyFile, "Watermark", "OffsetXPercent", oxp);
+                assignFromKeyfile(keyFile, "Watermark", "OffsetYPercent", oyp);
+                const int col = int(w.anchor) % 3;
+                const int row = int(w.anchor) / 3;
+                const double sx = col == 0 ? 1 : col == 2 ? -1 : 0;
+                const double sy = row == 0 ? 1 : row == 2 ? -1 : 0;
+                w.posX = sx * ox;
+                w.posY = sy * oy;
+                w.posXPercent = sx * oxp;
+                w.posYPercent = sy * oyp;
+            }
+            assignFromKeyfile(keyFile, "Watermark", "Reference",
+                              {{"Image", WatermarkParams::Reference::IMAGE},
+                               {"Canvas", WatermarkParams::Reference::CANVAS}},
+                              w.reference);
+            assignFromKeyfile(keyFile, "Watermark", "Opacity", w.opacity);
+            assignFromKeyfile(keyFile, "Watermark", "Rotation", w.rotation);
+        }
+
         const char *smoothing_group =
             ppVersion < 1016 ? "GuidedSmoothing" : "Smoothing";
         if (keyFile.has_group(smoothing_group) && RELEVANT_(smoothing)) {
@@ -6430,7 +6615,7 @@ bool ProcParams::operator==(const ProcParams &other) const
            ppEQ_(blackwhite) && ppEQ_(hsl) && ppEQ_(resize) && ppEQ_(raw) &&
            ppEQ_(icm) && ppEQ_(filmSimulation) && ppEQ_(softlight) &&
            ppEQ_(rgbCurves) && ppEQ_(metadata) && ppEQ_(dehaze) &&
-           ppEQ_(grain) && ppEQ_(border) && ppEQ_(smoothing) && ppEQ_(colorcorrection) &&
+           ppEQ_(grain) && ppEQ_(border) && ppEQ_(watermark) && ppEQ_(smoothing) && ppEQ_(colorcorrection) &&
            ppEQ_(filmNegative) && ppEQ_(spot);
 #undef ppEQ_
 }

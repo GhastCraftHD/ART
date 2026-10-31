@@ -111,6 +111,7 @@ ToolPanelCoordinator::ToolPanelCoordinator(bool batch)
     dehaze = Gtk::manage(new Dehaze());
     grain = Gtk::manage(new FilmGrain());
     border = Gtk::manage(new Border());
+    watermark = Gtk::manage(new Watermark());
     sensorbayer = Gtk::manage(new SensorBayer());
     sensorxtrans = Gtk::manage(new SensorXTrans());
     bayerprocess = Gtk::manage(new BayerProcess());
@@ -189,6 +190,7 @@ ToolPanelCoordinator::ToolPanelCoordinator(bool batch)
     // addfavoritePanel(resize->getPackBox(), prsharpening, 2);
     addfavoritePanel(transformPanel, prsharpening, 2);
     addfavoritePanel(transformPanel, border);
+    addfavoritePanel(transformPanel, watermark);
     addfavoritePanel(transformPanel, geompanel);
     addfavoritePanel(transformPanel, lenspanel);
     toolPanels.pop_back();
@@ -563,9 +565,11 @@ void ToolPanelCoordinator::panelChanged(const art::engine::ProcEvent &event,
         resize->write(params);
     }
 
-    if (params->border.enabled && params->resize != old_resize) {
+    if ((params->border.enabled || params->watermark.enabled) &&
+        params->resize != old_resize) {
         changeFlags |= art::engine::CROP;
     }
+    watermark->updateContext(*params);
 
     ipc->endUpdateParams(changeFlags); // starts the IPC processing
 

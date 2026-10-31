@@ -10,6 +10,7 @@ include_directories(${EXTRA_INCDIR}
     ${LCMS_INCLUDE_DIRS}
     ${LENSFUN_INCLUDE_DIRS}
     ${RSVG_INCLUDE_DIRS}
+    ${PANGOCAIRO_INCLUDE_DIRS}
     ${EXIV2_INCLUDE_DIRS}
     )
 
@@ -24,6 +25,7 @@ link_directories(
     ${LCMS_LIBRARY_DIRS}
     ${LENSFUN_LIBRARY_DIRS}
     ${RSVG_LIBRARY_DIRS}
+    ${PANGOCAIRO_LIBRARY_DIRS}
     )
 
 if(LIBRAW_FOUND)
@@ -158,6 +160,8 @@ set(RTENGINESOURCEFILES
     masks.cc
     ipgrain.cc
     ipborder.cc
+    watermark.cc
+    ipwatermark.cc
     ipdenoise.cc
     iptextureboost.cc
     metadata.cc
@@ -313,6 +317,7 @@ target_link_libraries(art_engine
     ${ZLIB_LIBRARIES}
     ${LENSFUN_LIBRARIES}
     ${RSVG_LIBRARIES}
+    ${PANGOCAIRO_LIBRARIES}
     ${EXIV2_LIBRARIES}
     )
 if(LCMS_FAST_FLOAT AND NOT LCMS_FAST_FLOAT_SYSTEM)

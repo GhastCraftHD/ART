@@ -408,6 +408,7 @@ pkg_check_modules (GOBJECT REQUIRED gobject-2.0>=2.44)
 pkg_check_modules (SIGC    REQUIRED sigc++-2.0>=2.3.1)
 pkg_check_modules (LENSFUN REQUIRED lensfun>=0.2)
 pkg_check_modules (RSVG    REQUIRED librsvg-2.0>=2.40)
+pkg_check_modules (PANGOCAIRO REQUIRED pangocairo)
 
 # Require exiv2 >= 0.24 to make sure everything we need is available
 #find_package(Exiv2 0.24 REQUIRED)

@@ -150,6 +150,7 @@ set(NONCLISOURCEFILES
     maskspanel.cc
     grain.cc
     border.cc
+    watermark.cc
     smoothing.cc
     colorcorrection.cc
     fastexport.cc

@@ -479,7 +479,8 @@ void CropHandler::setDetailedCrop(
     IImage8 *im, IImage8 *imtrue,
     const art::engine::procparams::ColorManagementParams &cmp,
     const art::engine::procparams::CropParams &cp,
-    const art::engine::procparams::BorderParams &bp, double out_scale, int ax,
+    const art::engine::procparams::BorderParams &bp,
+    const art::engine::procparams::WatermarkParams &wp, double out_scale, int ax,
     int ay, int aw, int ah, int askip)
 {
     if (!enabled) {
@@ -490,6 +491,7 @@ void CropHandler::setDetailedCrop(
 
     cropParams = cp;
     borderParams = bp;
+    watermarkParams = wp;
     borderOutScale = out_scale;
     colorParams = cmp;
 

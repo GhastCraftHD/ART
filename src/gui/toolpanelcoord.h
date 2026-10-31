@@ -70,6 +70,7 @@
 #include "flatfield.h"
 #include "grain.h"
 #include "border.h"
+#include "watermark.h"
 #include "guiutils.h"
 #include "hslequalizer.h"
 #include "localcontrast.h"
@@ -147,6 +148,7 @@ protected:
     Dehaze *dehaze;
     FilmGrain *grain;
     Border *border;
+    Watermark *watermark;
     FilmSimulation *filmSimulation;
     SensorBayer *sensorbayer;
     SensorXTrans *sensorxtrans;
