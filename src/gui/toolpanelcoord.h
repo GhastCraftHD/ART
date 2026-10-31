@@ -69,6 +69,7 @@
 #include "filmsimulation.h"
 #include "flatfield.h"
 #include "grain.h"
+#include "border.h"
 #include "guiutils.h"
 #include "hslequalizer.h"
 #include "localcontrast.h"
@@ -145,6 +146,7 @@ protected:
     SoftLight *softlight;
     Dehaze *dehaze;
     FilmGrain *grain;
+    Border *border;
     FilmSimulation *filmSimulation;
     SensorBayer *sensorbayer;
     SensorXTrans *sensorxtrans;

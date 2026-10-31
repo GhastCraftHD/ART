@@ -65,6 +65,8 @@ public:
     float getZoomFactor();
     double getFitZoom();
     double getFitCropZoom();
+    /// additional room needed around the image for an outside border
+    void getBorderFitExtra(double &extra_w, double &extra_h);
     bool isFullDisplay();
     void setWSize(int w, int h);
     void getWSize(int &w, int &h);
@@ -91,8 +93,10 @@ public:
     // DetailedCropListener interface
     void setDetailedCrop(art::engine::IImage8 *im, art::engine::IImage8 *imworking,
                          const art::engine::procparams::ColorManagementParams &cmp,
-                         const art::engine::procparams::CropParams &cp, int cx,
-                         int cy, int cw, int ch, int skip) override;
+                         const art::engine::procparams::CropParams &cp,
+                         const art::engine::procparams::BorderParams &bp,
+                         double out_scale, int cx, int cy, int cw, int ch,
+                         int skip) override;
     void getWindow(int &cwx, int &cwy, int &cww, int &cwh, int &cskip) override;
 
     // SizeListener interface
@@ -101,6 +105,8 @@ public:
     void update();
 
     art::engine::procparams::CropParams cropParams;
+    art::engine::procparams::BorderParams borderParams;
+    double borderOutScale = 1.0; ///< output pixels per full-image pixel
     art::engine::procparams::ColorManagementParams colorParams;
     Glib::RefPtr<Gdk::Pixbuf>
         cropPixbuf; // image displayed on monitor, using the monitor profile

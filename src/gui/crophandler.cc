@@ -238,18 +238,46 @@ bool CropHandler::isFullDisplay()
     return cropW == w && cropH == h;
 }
 
+void CropHandler::getBorderFitExtra(double &extra_w, double &extra_h)
+{
+    // with an outside border, leave room around the image so that the border
+    // overlay drawn by the CropWindow is visible when zooming to fit. The
+    // room is symmetric so that the (centered) image keeps all of it visible.
+    extra_w = extra_h = 0;
+    if (!borderParams.enabled ||
+        borderParams.placement !=
+            art::engine::procparams::BorderParams::Placement::OUTSIDE) {
+        return;
+    }
+    double w = cropParams.w, h = cropParams.h;
+    if (!cropParams.enabled && ipc) {
+        w = ipc->getFullWidth();
+        h = ipc->getFullHeight();
+    }
+    double side, bottom;
+    borderParams.getWidths(w, h, borderOutScale, side, bottom);
+    extra_w = 2 * side;
+    extra_h = 2 * std::max(side, bottom);
+}
+
 double CropHandler::getFitCropZoom()
 {
-    double z1 = (double)wh / (cropParams.h / getDisplayScale());
-    double z2 = (double)ww / (cropParams.w / getDisplayScale());
+    double ew, eh;
+    getBorderFitExtra(ew, eh);
+    double z1 = (double)wh / ((cropParams.h + eh) / getDisplayScale());
+    double z2 = (double)ww / ((cropParams.w + ew) / getDisplayScale());
     return z1 < z2 ? z1 : z2;
 }
 
 double CropHandler::getFitZoom()
 {
     if (ipc) {
-        double z1 = (double)wh / (ipc->getFullHeight() / getDisplayScale());
-        double z2 = (double)ww / (ipc->getFullWidth() / getDisplayScale());
+        double ew, eh;
+        getBorderFitExtra(ew, eh);
+        double z1 =
+            (double)wh / ((ipc->getFullHeight() + eh) / getDisplayScale());
+        double z2 =
+            (double)ww / ((ipc->getFullWidth() + ew) / getDisplayScale());
         return z1 < z2 ? z1 : z2;
     } else {
         return 1.0;
@@ -453,8 +481,9 @@ void CropHandler::getPosition(int &x, int &y)
 void CropHandler::setDetailedCrop(
     IImage8 *im, IImage8 *imtrue,
     const art::engine::procparams::ColorManagementParams &cmp,
-    const art::engine::procparams::CropParams &cp, int ax, int ay, int aw, int ah,
-    int askip)
+    const art::engine::procparams::CropParams &cp,
+    const art::engine::procparams::BorderParams &bp, double out_scale, int ax,
+    int ay, int aw, int ah, int askip)
 {
     if (!enabled) {
         return;
@@ -463,6 +492,8 @@ void CropHandler::setDetailedCrop(
     cimg.lock();
 
     cropParams = cp;
+    borderParams = bp;
+    borderOutScale = out_scale;
     colorParams = cmp;
 
     if (!cropimg.empty()) {

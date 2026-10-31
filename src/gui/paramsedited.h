@@ -51,6 +51,7 @@ public:
     bool general;
     bool gradient;
     bool grain;
+    bool border;
     bool hotDeadPixelFilter;
     bool hsl;
     bool icm;

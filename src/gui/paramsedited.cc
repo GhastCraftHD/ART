@@ -71,6 +71,7 @@ void ParamsEdited::set(bool v)
     softlight = v;
     dehaze = v;
     grain = v;
+    border = v;
     smoothing = v;
     colorcorrection = v;
     filmNegative = v;

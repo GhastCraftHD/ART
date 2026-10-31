@@ -2373,6 +2373,13 @@ void CropWindow::expose(Cairo::RefPtr<Cairo::Context> cr)
         }
     }
 
+    // note: editing_crop is true in normal mode as well, so it can't be used
+    // here; the border is hidden only while the crop tool is active
+    if (iarea->getToolMode() != TMCropSelect &&
+        (cropHandler.cropPixbuf || iarea->getPreviewHandler())) {
+        drawBorderOverlay(cr);
+    }
+
     if (state == SRotateSelecting) {
         drawStraightenGuide(cr);
         show_grid = false;
@@ -2404,6 +2411,87 @@ void CropWindow::expose(Cairo::RefPtr<Cairo::Context> cr)
 
     // t2.set ();
     //    printf ("etime --> %d, %d\n", t2.etime (t1), t4.etime (t3));
+}
+
+void CropWindow::drawBorderOverlay(Cairo::RefPtr<Cairo::Context> cr)
+{
+    // The border is not part of the preview pipeline: it is only added at
+    // the end of the output pipeline (see ImProcFunctions::applyBorder). Here
+    // we draw it on top of the preview, using the same geometry.
+    using art::engine::procparams::BorderParams;
+    const BorderParams &bp = cropHandler.borderParams;
+    if (!bp.enabled) {
+        return;
+    }
+
+    // rectangle of the final image, in full image coordinates
+    double rx = 0, ry = 0, rw = 0, rh = 0;
+    if (cropHandler.cropParams.enabled) {
+        rx = cropHandler.cropParams.x;
+        ry = cropHandler.cropParams.y;
+        rw = cropHandler.cropParams.w;
+        rh = cropHandler.cropParams.h;
+    } else {
+        int fw = 0, fh = 0;
+        cropHandler.getFullImageSize(fw, fh);
+        rw = fw;
+        rh = fh;
+    }
+    if (rw <= 0 || rh <= 0) {
+        return;
+    }
+
+    double side, bottom;
+    bp.getWidths(rw, rh, cropHandler.borderOutScale, side, bottom);
+    if (side <= 0 && bottom <= 0) {
+        return;
+    }
+
+    int cropX, cropY;
+    cropHandler.getPosition(cropX, cropY);
+    const double zoom = getScreenZoom();
+    const double ox = xpos + imgAreaX + imgX;
+    const double oy = ypos + imgAreaY + imgY;
+    const auto tx = [&](double v) { return ox + (v - cropX) * zoom; };
+    const auto ty = [&](double v) { return oy + (v - cropY) * zoom; };
+
+    double out_x1, out_y1, out_x2, out_y2; // outer edge of the border
+    double in_x1, in_y1, in_x2, in_y2;     // inner edge of the border
+    if (bp.placement == BorderParams::Placement::OUTSIDE) {
+        out_x1 = rx - side;
+        out_y1 = ry - side;
+        out_x2 = rx + rw + side;
+        out_y2 = ry + rh + bottom;
+        in_x1 = rx;
+        in_y1 = ry;
+        in_x2 = rx + rw;
+        in_y2 = ry + rh;
+    } else {
+        out_x1 = rx;
+        out_y1 = ry;
+        out_x2 = rx + rw;
+        out_y2 = ry + rh;
+        in_x1 = rx + side;
+        in_y1 = ry + side;
+        in_x2 = rx + rw - side;
+        in_y2 = ry + rh - bottom;
+    }
+
+    cr->save();
+    cr->rectangle(xpos + imgAreaX, ypos + imgAreaY, imgAreaW, imgAreaH);
+    cr->clip();
+
+    cr->set_fill_rule(Cairo::FILL_RULE_EVEN_ODD);
+    cr->rectangle(tx(out_x1), ty(out_y1), (out_x2 - out_x1) * zoom,
+                  (out_y2 - out_y1) * zoom);
+    if (in_x2 > in_x1 && in_y2 > in_y1) {
+        cr->rectangle(tx(in_x1), ty(in_y1), (in_x2 - in_x1) * zoom,
+                      (in_y2 - in_y1) * zoom);
+    }
+    cr->set_source_rgb(bp.red, bp.green, bp.blue);
+    cr->fill();
+
+    cr->restore();
 }
 
 void CropWindow::drawGridOverlay(Cairo::RefPtr<Cairo::Context> cr)

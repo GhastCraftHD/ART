@@ -489,6 +489,11 @@ private:
             ipf.prsharpening(img);
         }
 
+        if (params.border.enabled) {
+            ART_PROFILE_SCOPE("border");
+            img = ipf.applyBorder(img);
+        }
+
         sanitize("pipeline");
 
         ART_PROFILE_SCOPE("rgb2out");

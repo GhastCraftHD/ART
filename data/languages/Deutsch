@@ -545,6 +545,12 @@ HISTORY_MSG_96;L*a*b* - a*-Kurve
 HISTORY_MSG_97;L*a*b* - b*-Kurve
 HISTORY_MSG_98;Demosaicing-Methode
 HISTORY_MSG_99;Hotpixel-Filter
+HISTORY_MSG_BORDER_BOTTOMEXTRA;Rahmen - Zusätzlich unten
+HISTORY_MSG_BORDER_COLOR;Rahmen - Farbe
+HISTORY_MSG_BORDER_ENABLED;Rahmen
+HISTORY_MSG_BORDER_PLACEMENT;Rahmen - Position
+HISTORY_MSG_BORDER_SIZE;Rahmen - Breite
+HISTORY_MSG_BORDER_UNIT;Rahmen - Einheit
 HISTORY_MSG_BWMIX_COLORCAST;Schwarz/Weiß - Farbtönung
 HISTORY_MSG_CHMIXER_BLUE_PRIMARY;RGB-Kanalmixer - Primärfarbe Blau
 HISTORY_MSG_CHMIXER_GREEN_PRIMARY;RGB-Kanalmixer - Primärfarbe Grün
@@ -956,6 +962,7 @@ OPTIONS_BUNDLED_MISSING;Das mitgelieferte Profil <b>%1</b> konnte nicht gefunden
 OPTIONS_DEFIMG_MISSING;Das Standardprofil für <b>Bilddateien</b> wurde nicht gefunden oder ist beschädigt.\n\nÜberprüfen Sie bitte das Verzeichnis Ihrer Profile.\n\nProfil <b>%1</b> wird stattdessen verwendet.
 OPTIONS_DEFRAW_MISSING;Das Standardprofil für <b>RAW-Dateien</b> wurde nicht gefunden oder ist beschädigt.\n\nÜberprüfen Sie bitte das Verzeichnis Ihrer Profile.\n\nProfil <b>%1</b> wird stattdessen verwendet.
 PARTIALPASTE_ADVANCEDGROUP;Erweiterte Einstellungen
+PARTIALPASTE_BORDER;Rahmen
 PARTIALPASTE_CACORRECTION;Chromatische Aberration korrigieren
 PARTIALPASTE_CHANNELMIXER;RGB-Kanalmixer
 PARTIALPASTE_CHANNELMIXERBW;Schwarz/Weiß
@@ -1381,6 +1388,24 @@ TOOLBAR_TOOLTIP_PERSPECTIVE;<b>Perspektivkorrektur</b>\nTaste: <b>%shortcut(tool
 TOOLBAR_TOOLTIP_STRAIGHTEN;<b>Ausrichten/Drehen</b>\nTaste: <b>%shortcut(toolbar.straighten)%</b>\n\nRichtet das Bild entlang einer Leitlinie aus.
 TOOLBAR_TOOLTIP_WB;Weißabgleich manuell setzen.\nTaste: <b>%shortcut(toolbar.white_balance_picker)%</b>
 TOOL_SHORTCUT_HELP_HEADER;Tastenkürzel:\n(halten Sie die angegebene Taste gedrückt und stellen Sie\nden Regler mit +/- oder dem Mausrad ein)\n
+TP_BORDER_BOTTOMEXTRA;Zusätzlich unten (px)
+TP_BORDER_BOTTOMEXTRA_PERCENT;Zusätzlich unten (%)
+TP_BORDER_BOTTOMEXTRA_PERCENT_TOOLTIP;Zusätzliche Breite der unteren Seite, in Prozent der kürzeren Seite des exportierten Bildes. Ergibt z. B. einen „Polaroid“-Look.
+TP_BORDER_BOTTOMEXTRA_TOOLTIP;Zusätzliche Breite der unteren Seite, in Pixeln des exportierten Bildes. Ergibt z. B. einen „Polaroid“-Look.
+TP_BORDER_COLOR;Farbe
+TP_BORDER_LABEL;Rahmen
+TP_BORDER_PLACEMENT;Position
+TP_BORDER_PLACEMENT_INSIDE;Innen
+TP_BORDER_PLACEMENT_OUTSIDE;Außen
+TP_BORDER_PLACEMENT_TOOLTIP;<b>Außen</b>: Die Leinwand wird vergrößert, das ganze Bild bleibt erhalten.\n<b>Innen</b>: Der Rahmen übermalt die Bildränder, die Bildgröße bleibt gleich.\n\nDer Rahmen wird ganz am Ende der Verarbeitung angewendet, nach Skalierung und Ausgabeschärfung. Im Editor wird er als Überlagerung angezeigt.
+TP_BORDER_SIZE;Breite (px)
+TP_BORDER_SIZE_PERCENT;Breite (%)
+TP_BORDER_SIZE_PERCENT_TOOLTIP;Breite des Rahmens, in Prozent der kürzeren Seite des exportierten Bildes.
+TP_BORDER_SIZE_TOOLTIP;Breite des Rahmens, in Pixeln des exportierten Bildes (also nach der Skalierung).
+TP_BORDER_UNIT;Einheit
+TP_BORDER_UNIT_PERCENT;Prozent
+TP_BORDER_UNIT_PIXELS;Pixel
+TP_BORDER_UNIT_TOOLTIP;Pixel: feste Breite im exportierten Bild (nach der Skalierung).\nProzent: Breite relativ zur kürzeren Seite des exportierten Bildes; der Rahmen wirkt so bei jeder Exportgröße gleich.
 TP_BRIGHTCONTRSAT_CONTRAST;Kontrast
 TP_BWMIX_COLORCAST;Farbtönung
 TP_BWMIX_FILTER;Farbfilter

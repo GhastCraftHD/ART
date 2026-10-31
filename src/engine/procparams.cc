@@ -18,6 +18,7 @@
  *  along with ART.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <algorithm>
 #include <iostream>
 #include <iterator>
 #include <map>
@@ -2393,6 +2394,50 @@ bool GrainParams::operator!=(const GrainParams &other) const
     return !(*this == other);
 }
 
+BorderParams::BorderParams()
+    : enabled(false), placement(Placement::OUTSIDE), unit(Unit::PIXELS),
+      width(50), bottomExtra(0), widthPercent(3.0), bottomExtraPercent(0.0),
+      red(1.0), green(1.0), blue(1.0)
+{
+}
+
+bool BorderParams::operator==(const BorderParams &other) const
+{
+    return enabled == other.enabled && placement == other.placement &&
+           unit == other.unit && width == other.width &&
+           bottomExtra == other.bottomExtra &&
+           widthPercent == other.widthPercent &&
+           bottomExtraPercent == other.bottomExtraPercent &&
+           red == other.red && green == other.green && blue == other.blue;
+}
+
+bool BorderParams::operator!=(const BorderParams &other) const
+{
+    return !(*this == other);
+}
+
+void BorderParams::getWidths(double w, double h, double out_scale,
+                             double &side, double &bottom) const
+{
+    if (!(out_scale > 0)) {
+        out_scale = 1.0;
+    }
+    if (unit == Unit::PERCENT) {
+        // relative to the image itself, so independent of out_scale
+        const double base = std::max(std::min(w, h), 0.0);
+        side = base * std::max(widthPercent, 0.0) / 100.0;
+        bottom = side + base * std::max(bottomExtraPercent, 0.0) / 100.0;
+    } else {
+        side = std::max(width, 0) / out_scale;
+        bottom = side + std::max(bottomExtra, 0) / out_scale;
+    }
+    if (placement == Placement::INSIDE) {
+        // never cover more than the whole image
+        side = std::min(side, std::min(w, h) / 2.0);
+        bottom = std::min(bottom, h - side);
+    }
+}
+
 SmoothingParams::Region::Region()
     : mode(Mode::GUIDED), channel(Channel::RGB), radius(0), sigma(0),
       epsilon(0), iterations(1), falloff(1), nldetail(50), nlstrength(0),
@@ -2850,6 +2895,7 @@ void ProcParams::setDefaults()
     softlight = SoftLightParams();
     dehaze = DehazeParams();
     grain = GrainParams();
+    border = BorderParams();
     smoothing = SmoothingParams();
     colorcorrection = ColorCorrectionParams();
     raw = RAWParams();
@@ -3658,6 +3704,30 @@ int ProcParams::save(ProgressListener *pl, bool save_general, KeyFile &keyFile,
             saveToKeyfile("Grain", "ISO", grain.iso, keyFile);
             saveToKeyfile("Grain", "Strength", grain.strength, keyFile);
             saveToKeyfile("Grain", "Color", grain.color, keyFile);
+        }
+
+        // Border
+        if (RELEVANT_(border)) {
+            saveToKeyfile("Border", "Enabled", border.enabled, keyFile);
+            saveToKeyfile("Border", "Placement",
+                          {{BorderParams::Placement::OUTSIDE, "Outside"},
+                           {BorderParams::Placement::INSIDE, "Inside"}},
+                          border.placement, keyFile);
+            saveToKeyfile("Border", "Unit",
+                          {{BorderParams::Unit::PIXELS, "Pixels"},
+                           {BorderParams::Unit::PERCENT, "Percent"}},
+                          border.unit, keyFile);
+            saveToKeyfile("Border", "Width", border.width, keyFile);
+            saveToKeyfile("Border", "BottomExtra", border.bottomExtra,
+                          keyFile);
+            saveToKeyfile("Border", "WidthPercent", border.widthPercent,
+                          keyFile);
+            saveToKeyfile("Border", "BottomExtraPercent",
+                          border.bottomExtraPercent, keyFile);
+            saveToKeyfile("Border", "Color",
+                          std::vector<double>{border.red, border.green,
+                                              border.blue},
+                          keyFile);
         }
 
         // Smoothing
@@ -5384,6 +5454,33 @@ int ProcParams::load(ProgressListener *pl, bool load_general,
             }
         }
 
+        if (keyFile.has_group("Border") && RELEVANT_(border)) {
+            assignFromKeyfile(keyFile, "Border", "Enabled", border.enabled);
+            assignFromKeyfile(keyFile, "Border", "Placement",
+                              {{"Outside", BorderParams::Placement::OUTSIDE},
+                               {"Inside", BorderParams::Placement::INSIDE}},
+                              border.placement);
+            assignFromKeyfile(keyFile, "Border", "Unit",
+                              {{"Pixels", BorderParams::Unit::PIXELS},
+                               {"Percent", BorderParams::Unit::PERCENT}},
+                              border.unit);
+            assignFromKeyfile(keyFile, "Border", "Width", border.width);
+            assignFromKeyfile(keyFile, "Border", "BottomExtra",
+                              border.bottomExtra);
+            assignFromKeyfile(keyFile, "Border", "WidthPercent",
+                              border.widthPercent);
+            assignFromKeyfile(keyFile, "Border", "BottomExtraPercent",
+                              border.bottomExtraPercent);
+            // note: std::vector<double> would be sanitized as a curve
+            std::vector<float> c;
+            if (assignFromKeyfile(keyFile, "Border", "Color", c) &&
+                c.size() == 3) {
+                border.red = std::max(0.0, std::min(1.0, double(c[0])));
+                border.green = std::max(0.0, std::min(1.0, double(c[1])));
+                border.blue = std::max(0.0, std::min(1.0, double(c[2])));
+            }
+        }
+
         const char *smoothing_group =
             ppVersion < 1016 ? "GuidedSmoothing" : "Smoothing";
         if (keyFile.has_group(smoothing_group) && RELEVANT_(smoothing)) {
@@ -6337,7 +6434,7 @@ bool ProcParams::operator==(const ProcParams &other) const
            ppEQ_(blackwhite) && ppEQ_(hsl) && ppEQ_(resize) && ppEQ_(raw) &&
            ppEQ_(icm) && ppEQ_(filmSimulation) && ppEQ_(softlight) &&
            ppEQ_(rgbCurves) && ppEQ_(metadata) && ppEQ_(dehaze) &&
-           ppEQ_(grain) && ppEQ_(smoothing) && ppEQ_(colorcorrection) &&
+           ppEQ_(grain) && ppEQ_(border) && ppEQ_(smoothing) && ppEQ_(colorcorrection) &&
            ppEQ_(filmNegative) && ppEQ_(spot);
 #undef ppEQ_
 }

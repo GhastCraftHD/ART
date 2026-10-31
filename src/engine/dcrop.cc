@@ -560,8 +560,23 @@ void Crop::updateImpl(int todo)
                    3 * finalW);
         }
 
+        // output pixels per full-image pixel, as in the output pipeline
+        // (see simpleprocess.cc), used by the border overlay
+        double out_scale = 1.0;
+        if (params.resize.enabled) {
+            int imw, imh;
+            out_scale = parent->ipf.resizeScale(&params, parent->fw,
+                                                parent->fh, imw, imh);
+            const bool allow_upscaling = params.resize.allowUpscaling ||
+                                         params.resize.dataspec == 0;
+            if (!(out_scale < 1.0 || (out_scale > 1.0 && allow_upscaling))) {
+                out_scale = 1.0;
+            }
+        }
+
         cropImageListener->setDetailedCrop(final, finaltrue, params.icm,
-                                           params.crop, rqcropx, rqcropy,
+                                           params.crop, params.border,
+                                           out_scale, rqcropx, rqcropy,
                                            rqcropw, rqcroph, skip);
         delete final;
         delete finaltrue;

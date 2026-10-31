@@ -110,6 +110,7 @@ ToolPanelCoordinator::ToolPanelCoordinator(bool batch)
     softlight = Gtk::manage(new SoftLight());
     dehaze = Gtk::manage(new Dehaze());
     grain = Gtk::manage(new FilmGrain());
+    border = Gtk::manage(new Border());
     sensorbayer = Gtk::manage(new SensorBayer());
     sensorxtrans = Gtk::manage(new SensorXTrans());
     bayerprocess = Gtk::manage(new BayerProcess());
@@ -187,6 +188,7 @@ ToolPanelCoordinator::ToolPanelCoordinator(bool batch)
     addfavoritePanel(transformPanel, resize);
     // addfavoritePanel(resize->getPackBox(), prsharpening, 2);
     addfavoritePanel(transformPanel, prsharpening, 2);
+    addfavoritePanel(transformPanel, border);
     addfavoritePanel(transformPanel, geompanel);
     addfavoritePanel(transformPanel, lenspanel);
     toolPanels.pop_back();
@@ -499,6 +501,7 @@ void ToolPanelCoordinator::panelChanged(const art::engine::ProcEvent &event,
     int changeFlags = art::engine::RefreshMapper::getInstance()->getAction(event);
 
     ProcParams *params = ipc->beginUpdateParams();
+    const ResizeParams old_resize = params->resize;
 
     for (auto toolPanel : toolPanels) {
         toolPanel->write(params);
@@ -558,6 +561,14 @@ void ToolPanelCoordinator::panelChanged(const art::engine::ProcEvent &event,
     } else if (event == art::engine::EvCrop) {
         resize->update(params->crop.enabled, params->crop.w, params->crop.h);
         resize->write(params);
+    }
+
+    // The border overlay is sized in output pixels, so it depends on the
+    // resize factor. Resize events don't refresh the preview (RESIZE is
+    // M_VOID), so request a cheap redraw of the crops (CROP: no
+    // reprocessing) to deliver the new factor to the overlay.
+    if (params->border.enabled && params->resize != old_resize) {
+        changeFlags |= art::engine::CROP;
     }
 
     ipc->endUpdateParams(changeFlags); // starts the IPC processing

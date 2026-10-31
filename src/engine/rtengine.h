@@ -297,8 +297,10 @@ public:
      * @param img is a pointer to the detailed crop image */
     virtual void setDetailedCrop(IImage8 *img, IImage8 *imgtrue,
                                  const procparams::ColorManagementParams &cmp,
-                                 const procparams::CropParams &cp, int cx,
-                                 int cy, int cw, int ch, int skip) = 0;
+                                 const procparams::CropParams &cp,
+                                 const procparams::BorderParams &bp,
+                                 double out_scale, int cx, int cy, int cw,
+                                 int ch, int skip) = 0;
     virtual void getWindow(int &cx, int &cy, int &cw, int &ch, int &skip) = 0;
 };
 

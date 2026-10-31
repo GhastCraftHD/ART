@@ -149,6 +149,7 @@ set(NONCLISOURCEFILES
     areamask.cc
     maskspanel.cc
     grain.cc
+    border.cc
     smoothing.cc
     colorcorrection.cc
     fastexport.cc

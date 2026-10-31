@@ -530,6 +530,12 @@ HISTORY_MSG_490;DRC - Amount
 HISTORY_MSG_491;White Balance
 HISTORY_MSG_492;RGB Curves
 HISTORY_MSG_493;L*a*b* Adjustments
+HISTORY_MSG_BORDER_BOTTOMEXTRA;Border - Extra bottom width
+HISTORY_MSG_BORDER_COLOR;Border - Color
+HISTORY_MSG_BORDER_ENABLED;Border
+HISTORY_MSG_BORDER_PLACEMENT;Border - Placement
+HISTORY_MSG_BORDER_SIZE;Border - Width
+HISTORY_MSG_BORDER_UNIT;Border - Unit
 HISTORY_MSG_BWMIX_COLORCAST;B & W - Tint
 HISTORY_MSG_DRCOMPRESSION_SATCONTROL;DRC - Saturation control
 HISTORY_MSG_SATURATION_VIBRANCE;S/V - Vibrance
@@ -940,6 +946,7 @@ OPTIONS_BUNDLED_MISSING;The bundled profile "<b>%1</b>" could not be found!\n\nY
 OPTIONS_DEFIMG_MISSING;The default profile for <b>non-raw photos</b> could not be found or is not set.\n\nPlease check your profiles' directory, it may be missing or damaged.\n\n"<b>%1</b>" will be used instead.
 OPTIONS_DEFRAW_MISSING;The default profile for <b>raw photos</b> could not be found or is not set.\n\nPlease check your profiles' directory, it may be missing or damaged.\n\n"<b>%1</b>" will be used instead.
 PARTIALPASTE_ADVANCEDGROUP;Advanced Settings
+PARTIALPASTE_BORDER;Border
 PARTIALPASTE_DRCOMPRESSION;Dynamic range compression
 PARTIALPASTE_EFFECTSGROUP;Special Effects Settings
 PARTIALPASTE_EXPOSUREGROUP;Exposure Settings
@@ -1389,6 +1396,24 @@ TOOLBAR_TOOLTIP_HAND;Hand tool.\nShortcut: <b>%shortcut(toolbar.hand)%</b>
 TOOLBAR_TOOLTIP_PERSPECTIVE;<b>Perspective Correction</b>.\nShortcut: <b>%shortcut(toolbar.perspective)%</b>\n\nEdit control lines to correct perspective distortion. Click this button again to apply the correction.
 TOOLBAR_TOOLTIP_STRAIGHTEN;<b>Straighten</b> / <b>fine rotation</b>.\nShortcut: <b>%shortcut(toolbar.straighten)%</b>\n\nIndicate the vertical or horizontal by drawing a guide line over the image preview. Angle of rotation will be shown next to the guide line. Center of rotation is the geometrical center of the image.
 TOOLBAR_TOOLTIP_WB;Spot white balance.\nShortcut: <b>%shortcut(toolbar.white_balance_picker)%</b>
+TP_BORDER_BOTTOMEXTRA;Extra bottom width (px)
+TP_BORDER_BOTTOMEXTRA_PERCENT;Extra bottom width (%)
+TP_BORDER_BOTTOMEXTRA_PERCENT_TOOLTIP;Additional width of the bottom side, in percent of the shorter side of the output image. Use it for a 'Polaroid' look.
+TP_BORDER_BOTTOMEXTRA_TOOLTIP;Additional width of the bottom side, in pixels of the output image. Use it for a 'Polaroid' look.
+TP_BORDER_COLOR;Color
+TP_BORDER_LABEL;Border
+TP_BORDER_PLACEMENT;Placement
+TP_BORDER_PLACEMENT_INSIDE;Inside
+TP_BORDER_PLACEMENT_OUTSIDE;Outside
+TP_BORDER_PLACEMENT_TOOLTIP;<b>Outside</b>: the canvas is enlarged, the whole image is kept.\n<b>Inside</b>: the border is painted over the image edges, the image size does not change.\n\nThe border is applied at the very end of the processing, after resizing and output sharpening. In the editor it is shown as an overlay.
+TP_BORDER_SIZE;Width (px)
+TP_BORDER_SIZE_PERCENT;Width (%)
+TP_BORDER_SIZE_PERCENT_TOOLTIP;Width of the border, in percent of the shorter side of the output image.
+TP_BORDER_SIZE_TOOLTIP;Width of the border, in pixels of the output image (i.e. after resizing).
+TP_BORDER_UNIT;Unit
+TP_BORDER_UNIT_PERCENT;Percent
+TP_BORDER_UNIT_PIXELS;Pixels
+TP_BORDER_UNIT_TOOLTIP;Pixels: fixed width in the output image (after resizing).\nPercent: width relative to the shorter side of the output image, so the border looks the same at any export size.
 TP_DRCOMPRESSION_AMOUNT;Amount
 TP_DRCOMPRESSION_LABEL;Dynamic Range Compression
 TP_DRCOMPRESSION_SATCONTROL;Saturation control

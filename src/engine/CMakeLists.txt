@@ -157,6 +157,7 @@ set(RTENGINESOURCEFILES
     iplogenc.cc
     masks.cc
     ipgrain.cc
+    ipborder.cc
     ipdenoise.cc
     iptextureboost.cc
     metadata.cc
