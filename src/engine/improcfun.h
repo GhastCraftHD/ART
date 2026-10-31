@@ -187,10 +187,6 @@ public:
     bool colorCorrection(Imagefloat *rgb);
     void logEncoding(Imagefloat *rgb);
     void filmGrain(Imagefloat *rgb);
-    /** Applies the border (frame) tool. Runs at the very end of the output
-        pipeline (after resize and output sharpening). With an outside border
-        a new, larger image is returned and img is deleted; otherwise img
-        itself is returned. */
     Imagefloat *applyBorder(Imagefloat *img);
     bool guidedSmoothing(Imagefloat *rgb);
     void hslEqualizer(Imagefloat *rgb);

@@ -2423,7 +2423,6 @@ void BorderParams::getWidths(double w, double h, double out_scale,
         out_scale = 1.0;
     }
     if (unit == Unit::PERCENT) {
-        // relative to the image itself, so independent of out_scale
         const double base = std::max(std::min(w, h), 0.0);
         side = base * std::max(widthPercent, 0.0) / 100.0;
         bottom = side + base * std::max(bottomExtraPercent, 0.0) / 100.0;
@@ -2432,7 +2431,6 @@ void BorderParams::getWidths(double w, double h, double out_scale,
         bottom = side + std::max(bottomExtra, 0) / out_scale;
     }
     if (placement == Placement::INSIDE) {
-        // never cover more than the whole image
         side = std::min(side, std::min(w, h) / 2.0);
         bottom = std::min(bottom, h - side);
     }
@@ -3706,7 +3704,6 @@ int ProcParams::save(ProgressListener *pl, bool save_general, KeyFile &keyFile,
             saveToKeyfile("Grain", "Color", grain.color, keyFile);
         }
 
-        // Border
         if (RELEVANT_(border)) {
             saveToKeyfile("Border", "Enabled", border.enabled, keyFile);
             saveToKeyfile("Border", "Placement",
@@ -5471,7 +5468,6 @@ int ProcParams::load(ProgressListener *pl, bool load_general,
                               border.widthPercent);
             assignFromKeyfile(keyFile, "Border", "BottomExtraPercent",
                               border.bottomExtraPercent);
-            // note: std::vector<double> would be sanitized as a curve
             std::vector<float> c;
             if (assignFromKeyfile(keyFile, "Border", "Color", c) &&
                 c.size() == 3) {

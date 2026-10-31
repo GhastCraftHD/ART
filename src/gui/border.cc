@@ -38,14 +38,11 @@ Glib::ustring color_to_string(const Gdk::RGBA &c)
     return buf;
 }
 
-} // namespace
+}
 
 Border::Border()
     : FoldableToolPanel(this, "border", M("TP_BORDER_LABEL"), false, true, true)
 {
-    // The border is not computed in the preview pipeline, but drawn as an
-    // overlay by the image view. CROP only refreshes the displayed crops
-    // (which carry the border parameters to the view) without reprocessing.
     auto m = ProcEventMapper::getInstance();
     EvEnabled = m->newEvent(art::engine::CROP, "HISTORY_MSG_BORDER_ENABLED");
     EvPlacement =
@@ -81,8 +78,6 @@ Border::Border()
     hbu->pack_start(*unit);
     hbu->show_all();
 
-    // one set of sliders per unit, so that switching the unit keeps the
-    // values of the other one
     size = Gtk::manage(new Adjuster(M("TP_BORDER_SIZE"), 0., 1000., 1., 50.));
     size->set_tooltip_text(M("TP_BORDER_SIZE_TOOLTIP"));
     size->setAdjusterListener(this);
@@ -250,4 +245,4 @@ void Border::toolReset(bool to_initial)
     read(&pp);
 }
 
-}} // namespace art::gui
+}}

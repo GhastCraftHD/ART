@@ -2373,8 +2373,6 @@ void CropWindow::expose(Cairo::RefPtr<Cairo::Context> cr)
         }
     }
 
-    // note: editing_crop is true in normal mode as well, so it can't be used
-    // here; the border is hidden only while the crop tool is active
     if (iarea->getToolMode() != TMCropSelect &&
         (cropHandler.cropPixbuf || iarea->getPreviewHandler())) {
         drawBorderOverlay(cr);
@@ -2415,16 +2413,12 @@ void CropWindow::expose(Cairo::RefPtr<Cairo::Context> cr)
 
 void CropWindow::drawBorderOverlay(Cairo::RefPtr<Cairo::Context> cr)
 {
-    // The border is not part of the preview pipeline: it is only added at
-    // the end of the output pipeline (see ImProcFunctions::applyBorder). Here
-    // we draw it on top of the preview, using the same geometry.
     using art::engine::procparams::BorderParams;
     const BorderParams &bp = cropHandler.borderParams;
     if (!bp.enabled) {
         return;
     }
 
-    // rectangle of the final image, in full image coordinates
     double rx = 0, ry = 0, rw = 0, rh = 0;
     if (cropHandler.cropParams.enabled) {
         rx = cropHandler.cropParams.x;
@@ -2455,8 +2449,8 @@ void CropWindow::drawBorderOverlay(Cairo::RefPtr<Cairo::Context> cr)
     const auto tx = [&](double v) { return ox + (v - cropX) * zoom; };
     const auto ty = [&](double v) { return oy + (v - cropY) * zoom; };
 
-    double out_x1, out_y1, out_x2, out_y2; // outer edge of the border
-    double in_x1, in_y1, in_x2, in_y2;     // inner edge of the border
+    double out_x1, out_y1, out_x2, out_y2;
+    double in_x1, in_y1, in_x2, in_y2;
     if (bp.placement == BorderParams::Placement::OUTSIDE) {
         out_x1 = rx - side;
         out_y1 = ry - side;

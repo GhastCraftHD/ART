@@ -1238,24 +1238,17 @@ struct GrainParams {
 };
 
 struct BorderParams {
-    /** Where the border is placed: OUTSIDE enlarges the canvas so that the
-        whole image is kept, INSIDE paints over the image edges and keeps the
-        image size. */
     enum class Placement { OUTSIDE, INSIDE };
-    /** Unit of the border widths: PIXELS of the output image (after resize),
-        or PERCENT of the shorter side of the output image. Both sets of
-        values are stored, only the ones of the active unit are used. */
     enum class Unit { PIXELS, PERCENT };
 
     bool enabled;
     Placement placement;
     Unit unit;
-    int width;       ///< width of each side, in pixels of the output image
-    int bottomExtra; ///< additional width at the bottom, in output pixels
-    double widthPercent;       ///< width of each side, in % of the shorter
-                               ///< side of the output image
-    double bottomExtraPercent; ///< additional width at the bottom, in %
-    double red;         ///< border colour, gamma-encoded sRGB in [0, 1]
+    int width;
+    int bottomExtra;
+    double widthPercent;
+    double bottomExtraPercent;
+    double red;
     double green;
     double blue;
 
@@ -1264,11 +1257,6 @@ struct BorderParams {
     bool operator==(const BorderParams &other) const;
     bool operator!=(const BorderParams &other) const;
 
-    /** Computes the border widths for an image of size w x h (the size
-        *before* the border is applied), in the same units as w and h.
-        out_scale is the number of output pixels per unit of w/h (i.e. the
-        resize factor; 1 when w/h are already output pixels). Shared between
-        the engine and the GUI preview overlay so that both agree. */
     void getWidths(double w, double h, double out_scale, double &side,
                    double &bottom) const;
 };

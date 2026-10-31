@@ -64,4 +64,4 @@ private:
     art::engine::procparams::BorderParams initial_params;
 };
 
-}} // namespace art::gui
+}}

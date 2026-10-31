@@ -35,8 +35,6 @@ inline double srgb_to_linear(double v)
     return v <= 0.04045 ? v / 12.92 : std::pow((v + 0.055) / 1.055, 2.4);
 }
 
-/// Converts the (gamma-encoded sRGB) border colour into linear values of the
-/// image's working space, in the numeric range of the image.
 void border_color(const procparams::BorderParams &bp, const Imagefloat *img,
                   float &r, float &g, float &b)
 {
@@ -57,7 +55,7 @@ void border_color(const procparams::BorderParams &bp, const Imagefloat *img,
     b *= mul;
 }
 
-} // namespace
+}
 
 Imagefloat *ImProcFunctions::applyBorder(Imagefloat *img)
 {
@@ -105,7 +103,6 @@ Imagefloat *ImProcFunctions::applyBorder(Imagefloat *img)
         return img;
     }
 
-    // OUTSIDE: enlarge the canvas, keeping the whole image
     const int nW = W + 2 * side;
     const int nH = H + side + bottom;
 
@@ -138,4 +135,4 @@ Imagefloat *ImProcFunctions::applyBorder(Imagefloat *img)
     return res;
 }
 
-}} // namespace art::engine
+}}

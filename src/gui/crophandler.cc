@@ -240,9 +240,6 @@ bool CropHandler::isFullDisplay()
 
 void CropHandler::getBorderFitExtra(double &extra_w, double &extra_h)
 {
-    // with an outside border, leave room around the image so that the border
-    // overlay drawn by the CropWindow is visible when zooming to fit. The
-    // room is symmetric so that the (centered) image keeps all of it visible.
     extra_w = extra_h = 0;
     if (!borderParams.enabled ||
         borderParams.placement !=

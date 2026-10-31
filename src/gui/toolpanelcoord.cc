@@ -563,10 +563,6 @@ void ToolPanelCoordinator::panelChanged(const art::engine::ProcEvent &event,
         resize->write(params);
     }
 
-    // The border overlay is sized in output pixels, so it depends on the
-    // resize factor. Resize events don't refresh the preview (RESIZE is
-    // M_VOID), so request a cheap redraw of the crops (CROP: no
-    // reprocessing) to deliver the new factor to the overlay.
     if (params->border.enabled && params->resize != old_resize) {
         changeFlags |= art::engine::CROP;
     }

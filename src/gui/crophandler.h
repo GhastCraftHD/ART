@@ -65,7 +65,6 @@ public:
     float getZoomFactor();
     double getFitZoom();
     double getFitCropZoom();
-    /// additional room needed around the image for an outside border
     void getBorderFitExtra(double &extra_w, double &extra_h);
     bool isFullDisplay();
     void setWSize(int w, int h);
@@ -106,7 +105,7 @@ public:
 
     art::engine::procparams::CropParams cropParams;
     art::engine::procparams::BorderParams borderParams;
-    double borderOutScale = 1.0; ///< output pixels per full-image pixel
+    double borderOutScale = 1.0;
     art::engine::procparams::ColorManagementParams colorParams;
     Glib::RefPtr<Gdk::Pixbuf>
         cropPixbuf; // image displayed on monitor, using the monitor profile

@@ -560,8 +560,6 @@ void Crop::updateImpl(int todo)
                    3 * finalW);
         }
 
-        // output pixels per full-image pixel, as in the output pipeline
-        // (see simpleprocess.cc), used by the border overlay
         double out_scale = 1.0;
         if (params.resize.enabled) {
             int imw, imh;
